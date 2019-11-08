@@ -929,30 +929,37 @@ namespace Mag6
 
         private void bSearch_Click(object sender, EventArgs e)
         {
-            _searchResults.Clear();
-            _searchIndex = 0;
-            if (string.IsNullOrEmpty(tSearch.Text)) {
-                tSearch.Focus();
-                return;
-            }
-            var qry = _ctx.Albums.AsQueryable();
-            if (cbSearchSongs.Checked)
-                qry = qry
-                    .Where(x =>
-                        x.Name.Contains(tSearch.Text) ||
-                        x.Songs.Any(y => y.Name.Contains(tSearch.Text) || y.FileName.Contains(tSearch.Text)));
-            else
-                qry = qry.Where(x => x.Name.Contains(tSearch.Text));
-            if (!string.IsNullOrEmpty(_filter))
-                qry = qry.Where(x => x.DVDs.Select(y => y.Name).ToList().Contains(_filter));
-            _searchResults = qry.OrderBy(x => x.Path + "\\" + x.Name).ToList()
-                .Select(x => new AlbumDto(x)).ToList();
-            if (!_searchResults.Any())
+            try
             {
-                MessageBox.Show("Ничего не найдено.");
-                return;
+                _searchResults.Clear();
+                _searchIndex = 0;
+                if (string.IsNullOrEmpty(tSearch.Text))
+                {
+                    tSearch.Focus();
+                    return;
+                }
+                var qry = _ctx.Albums.AsQueryable();
+                if (cbSearchSongs.Checked)
+                    qry = qry
+                        .Where(x =>
+                            x.Name.Contains(tSearch.Text) ||
+                            x.Songs.Any(y => y.Name.Contains(tSearch.Text) || y.FileName.Contains(tSearch.Text)));
+                else
+                    qry = qry.Where(x => x.Name.Contains(tSearch.Text));
+                if (!string.IsNullOrEmpty(_filter))
+                    qry = qry.Where(x => x.DVDs.Select(y => y.Name).ToList().Contains(_filter));
+                _searchResults = qry.OrderBy(x => x.Path + "\\" + x.Name).ToList()
+                    .Select(x => new AlbumDto(x)).ToList();
+                if (!_searchResults.Any())
+                {
+                    MessageBox.Show("Ничего не найдено.");
+                    return;
+                }
+                DisplayNode(_searchResults[_searchIndex], cbSearchSongs.Checked ? tSearch.Text : null);
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
             }
-            DisplayNode(_searchResults[_searchIndex], cbSearchSongs.Checked ? tSearch.Text : null);
         }
 
         private void DisplayNode(AlbumDto node, string songSearched)
@@ -975,10 +982,13 @@ namespace Mag6
 
             _searchedSong = string.IsNullOrEmpty(songSearched) ? "" : songSearched.ToLower();
 
-            obj = _treeList.Where(x => x.Id == node.Id).First();
-            tlwAlbums.SelectedObject = obj;
-            tlwAlbums.FocusedObject = obj;
-            tlwAlbums.EnsureModelVisible(obj);
+            obj = _treeList.Where(x => x.Id == node.Id).FirstOrDefault();
+            if (obj != null)
+            {
+                tlwAlbums.SelectedObject = obj;
+                tlwAlbums.FocusedObject = obj;
+                tlwAlbums.EnsureModelVisible(obj);
+            }
         }
 
         private void tSearch_KeyDown(object sender, KeyEventArgs e)
