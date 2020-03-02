@@ -728,7 +728,17 @@ namespace Mag6
 
                     try
                     {
-                        var dirList = uplAlbum.Path.Split('\\').ToList();
+                        var dirList = new List<string>(); // uplAlbum.Path.Split('\\').ToList();
+                        var alb = uplAlbum;
+                        while(alb.ParentId.HasValue)
+                        {
+                            alb = _ctx.Albums.Single(x => x.Id == alb.ParentId);
+                            if (!(alb.IsHidden ?? false))
+                            {
+                                dirList.Insert(0, alb.Name);
+                            }
+                        }
+
                         // Music и стиль пропускаем
                         if (dirList.Count > 2)
                         {
