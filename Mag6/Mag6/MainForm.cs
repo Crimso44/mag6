@@ -548,6 +548,39 @@ namespace Mag6
             }
             var alb = _ctx.Albums.Where(x => x.Id == sel.Id).First();
             RecalcDurations(alb, res);
+
+            var dvdNamesExists = _ctx.DVDs.Where(d => d.AlbumId == alb.Id)
+                .Select(d => d.Name).Distinct().ToList();
+
+            var dvdNamesBelow = (
+                from a in _ctx.Albums
+                join d in _ctx.DVDs on a.Id equals d.AlbumId
+                where a.ParentId == alb.Id
+                select d.Name).Distinct().ToList();
+
+            if (dvdNamesBelow.Any())
+            {
+                var dvdsToAdd = dvdNamesBelow.Where(x => !dvdNamesExists.Contains(x)).ToList();
+                var dvdsToRemove = dvdNamesExists.Where(x => !dvdNamesBelow.Contains(x)).ToList();
+                _ctx.DVDs.AddRange(dvdsToAdd.Select(d => new DVD() { AlbumId = alb.Id, Name = d }).ToList());
+                _ctx.DVDs.RemoveRange(_ctx.DVDs.Where(d => d.AlbumId == alb.Id && dvdsToRemove.Contains(d.Name)).ToList());
+                _ctx.SaveChanges();
+
+                if (dvdsToAdd.Any() || dvdsToRemove.Any()) {
+                    var path = GetDirName(txtMusicPath.Text);
+                    path = path.Substring(0, path.Length - 6) + alb.Path + "\\magdata";
+                    var magFile = File.ReadAllLines(path);
+                    var magdata = new List<string>(magFile);
+                    var isHidden = magdata.Any(x => x == "hidden");
+                    var newMagdata = _ctx.DVDs.Where(d => d.AlbumId == alb.Id).OrderBy(d => d.Name).Select(d => d.Name).ToList();
+                    if (isHidden) newMagdata.Add("hidden");
+                    using (var tw = new StreamWriter("path"))
+                    {
+                        foreach (var s in newMagdata) tw.WriteLine(s);
+                    }
+                }
+
+            }
         }
 
         private void RecalcDurations(Album parentAlbum, FolderDataDto res)
