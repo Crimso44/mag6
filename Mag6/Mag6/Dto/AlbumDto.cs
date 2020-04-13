@@ -24,7 +24,7 @@ namespace Mag6.Dto
             Bitrate = a.Bitrate;
             IsHidden = a.IsHidden ?? false;
             ChildIds = new List<int>();
-            Dvds = a.DVDs.Select(x => x.Name).ToList();
+            Dvds = a.DVDs.Select(x => x.Name).OrderBy(x => x).ToList();
         }
 
         public void Assign(FolderDataDto a)

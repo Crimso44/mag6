@@ -1,4 +1,5 @@
 ﻿using ATL;
+using BrightIdeasSoftware;
 using Mag6.Dto;
 using System;
 using System.Collections;
@@ -68,6 +69,8 @@ namespace Mag6
                 return new ArrayList(chlds);
             };
 
+            tlwAlbums.CellToolTipShowing += new EventHandler<ToolTipShowingEventArgs>(tlwAlbums_CellToolTipShowing);
+            
             olvName.ImageGetter = delegate (object row) {
                 var data = (AlbumDto)row;
                 var key = data.Id.ToString();
@@ -126,6 +129,22 @@ namespace Mag6
                 }
                 return key;
             };
+        }
+
+        void tlwAlbums_CellToolTipShowing(object sender, ToolTipShowingEventArgs e)
+        {
+            var alb = (AlbumDto)e.Item.RowObject;
+            var arsts = alb.Dvds.Where(x => x.StartsWith("_")).ToList();
+            if (arsts.Any()) {
+                if (arsts.Count > 11)
+                {
+                    e.Text = string.Join("\n", arsts.Take(5)) + "\n...\n" + string.Join("\n", arsts.Skip(arsts.Count - 5).Take(5));
+                }
+                else
+                {
+                    e.Text = string.Join("\n", arsts);
+                }
+            }
         }
 
         private void LoadCallback(string key, Image img)
@@ -369,7 +388,7 @@ namespace Mag6
                 {
                     foreach (var dvd in res.Dvds)
                     {
-                        if (!innerDvds.Contains(dvd))
+                        if (!innerDvds.Contains(dvd) && !dvd.StartsWith("_"))
                             _loadErrors.Add($"- {dvd}: {parentAlbum.Path}\\{parentAlbum.Name}");
                     }
                     foreach (var dvd in innerDvds)
@@ -620,9 +639,12 @@ namespace Mag6
             var dvds = _ctx.DVDs.Select(x => x.Name).Distinct().OrderBy(x => x).ToList();
             foreach(var dvd in dvds)
             {
-                row = dsDvds.Tables[0].NewRow();
-                row["Name"] = dvd;
-                dsDvds.Tables[0].Rows.Add(row);
+                if (!dvd.StartsWith("_"))
+                {
+                    row = dsDvds.Tables[0].NewRow();
+                    row["Name"] = dvd;
+                    dsDvds.Tables[0].Rows.Add(row);
+                }
             }
             dwDvds.DataSource = null;
             dwDvds.DataSource = dsDvds;
@@ -870,7 +892,10 @@ namespace Mag6
             {
                 e.Item.ForeColor = Color.Gray;
             }
-            if (data.Dvds.Count == 1)
+            else if (data.Dvds.Any(x => x.StartsWith("_"))) {
+                e.Item.ForeColor = Color.DarkGreen;
+            }
+            if (data.Dvds.Count(x => !x.StartsWith("_")) == 1)
             {
                 e.Item.Font = new Font(tlwAlbums.Font, FontStyle.Bold);
             }
@@ -1091,6 +1116,7 @@ namespace Mag6
                 miHidden.Checked = ((AlbumDto)e.Model).IsHidden;
                 miHidden.Tag = e.Model;
                 miToFolder.Tag = e.Model;
+                aerostatToolStripMenuItem.Tag = e.Model;
             }
         }
 
@@ -1127,6 +1153,50 @@ namespace Mag6
             _ctx.SaveChanges();
 
             tlwAlbums.RefreshObject(data);
+        }
+
+        private void aerostatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var data = ((ToolStripMenuItem)sender).Tag as AlbumDto;
+            var path = GetDirName(txtMusicPath.Text);
+
+            while (data != null)
+            {
+                var magPath = path.Substring(0, path.Length - 6) + data.Path + "\\" + data.Name + "\\magdata";
+                var magFile = File.ReadAllLines(magPath);
+                var magdata = new List<string>(magFile);
+                var tagName = $"_aerostat{Decimal.ToInt32(aerostatUpDown.Value).ToString("D3")}";
+
+                if (magdata.Contains(tagName))
+                {
+                    break;
+                } else
+                {
+                    magdata.Add(tagName);
+                    File.WriteAllLines(magPath, magdata.ToArray());
+
+                    var dvd = new DVD()
+                    {
+                        AlbumId = data.Id,
+                        Name = tagName
+                    };
+                    _ctx.DVDs.Add(dvd);
+                    _ctx.SaveChanges();
+
+                }
+
+                data.Dvds.Add(tagName);
+                tlwAlbums.RefreshObject(data);
+
+                if (data.ParentId.HasValue)
+                {
+                    data = _treeList.Single(x => x.Id == data.ParentId);
+                } else
+                {
+                    break;
+                }
+            }
+
         }
     }
 }

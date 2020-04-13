@@ -37,6 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtMusicPath = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.aerostatUpDown = new System.Windows.Forms.NumericUpDown();
             this.bSearchNext = new System.Windows.Forms.Button();
             this.cbSearchSongs = new System.Windows.Forms.CheckBox();
             this.bSearch = new System.Windows.Forms.Button();
@@ -91,9 +92,11 @@
             this.mAlbums = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miToFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.miHidden = new System.Windows.Forms.ToolStripMenuItem();
+            this.aerostatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.aerostatUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dsDvds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tDvds)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dsSongs)).BeginInit();
@@ -145,6 +148,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.aerostatUpDown);
             this.panel2.Controls.Add(this.bSearchNext);
             this.panel2.Controls.Add(this.cbSearchSongs);
             this.panel2.Controls.Add(this.bSearch);
@@ -158,6 +162,29 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(814, 27);
             this.panel2.TabIndex = 1;
+            // 
+            // aerostatUpDown
+            // 
+            this.aerostatUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.aerostatUpDown.Location = new System.Drawing.Point(763, 4);
+            this.aerostatUpDown.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+            this.aerostatUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.aerostatUpDown.Name = "aerostatUpDown";
+            this.aerostatUpDown.Size = new System.Drawing.Size(48, 20);
+            this.aerostatUpDown.TabIndex = 10;
+            this.aerostatUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // bSearchNext
             // 
@@ -644,7 +671,7 @@
             this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
             this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
             this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 58;
+            this.nameDataGridViewTextBoxColumn.Width = 60;
             // 
             // FileSize
             // 
@@ -696,9 +723,10 @@
             // 
             this.mAlbums.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miToFolder,
-            this.miHidden});
+            this.miHidden,
+            this.aerostatToolStripMenuItem});
             this.mAlbums.Name = "mAlbums";
-            this.mAlbums.Size = new System.Drawing.Size(157, 48);
+            this.mAlbums.Size = new System.Drawing.Size(157, 70);
             // 
             // miToFolder
             // 
@@ -713,6 +741,13 @@
             this.miHidden.Size = new System.Drawing.Size(156, 22);
             this.miHidden.Text = "Скрыть";
             this.miHidden.Click += new System.EventHandler(this.miHidden_Click);
+            // 
+            // aerostatToolStripMenuItem
+            // 
+            this.aerostatToolStripMenuItem.Name = "aerostatToolStripMenuItem";
+            this.aerostatToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.aerostatToolStripMenuItem.Text = "Аэростат";
+            this.aerostatToolStripMenuItem.Click += new System.EventHandler(this.aerostatToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -732,6 +767,7 @@
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.aerostatUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dsDvds)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tDvds)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dsSongs)).EndInit();
@@ -819,5 +855,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Bitrate;
         private System.Windows.Forms.DataGridViewCheckBoxColumn VBR;
         private System.Windows.Forms.DataGridViewTextBoxColumn Duration;
+        private System.Windows.Forms.ToolStripMenuItem aerostatToolStripMenuItem;
+        private System.Windows.Forms.NumericUpDown aerostatUpDown;
     }
 }
