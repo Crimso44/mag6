@@ -172,19 +172,9 @@
             0,
             0,
             0});
-            this.aerostatUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.aerostatUpDown.Name = "aerostatUpDown";
             this.aerostatUpDown.Size = new System.Drawing.Size(48, 20);
             this.aerostatUpDown.TabIndex = 10;
-            this.aerostatUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // bSearchNext
             // 

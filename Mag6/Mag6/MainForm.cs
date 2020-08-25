@@ -588,14 +588,17 @@ namespace Mag6
                 if (dvdsToAdd.Any() || dvdsToRemove.Any()) {
                     var path = GetDirName(txtMusicPath.Text);
                     path = path.Substring(0, path.Length - 6) + alb.Path + "\\magdata";
-                    var magFile = File.ReadAllLines(path);
-                    var magdata = new List<string>(magFile);
-                    var isHidden = magdata.Any(x => x == "hidden");
-                    var newMagdata = _ctx.DVDs.Where(d => d.AlbumId == alb.Id).OrderBy(d => d.Name).Select(d => d.Name).ToList();
-                    if (isHidden) newMagdata.Add("hidden");
-                    using (var tw = new StreamWriter("path"))
+                    if (File.Exists(path))
                     {
-                        foreach (var s in newMagdata) tw.WriteLine(s);
+                        var magFile = File.ReadAllLines(path);
+                        var magdata = new List<string>(magFile);
+                        var isHidden = magdata.Any(x => x == "hidden");
+                        var newMagdata = _ctx.DVDs.Where(d => d.AlbumId == alb.Id).OrderBy(d => d.Name).Select(d => d.Name).ToList();
+                        if (isHidden) newMagdata.Add("hidden");
+                        using (var tw = new StreamWriter("path"))
+                        {
+                            foreach (var s in newMagdata) tw.WriteLine(s);
+                        }
                     }
                 }
 
@@ -1157,46 +1160,50 @@ namespace Mag6
 
         private void aerostatToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var data = ((ToolStripMenuItem)sender).Tag as AlbumDto;
-            var path = GetDirName(txtMusicPath.Text);
-
-            while (data != null)
+            if (aerostatUpDown.Value > 0)
             {
-                var magPath = path.Substring(0, path.Length - 6) + data.Path + "\\" + data.Name + "\\magdata";
-                var magFile = File.ReadAllLines(magPath);
-                var magdata = new List<string>(magFile);
-                var tagName = $"_aerostat{Decimal.ToInt32(aerostatUpDown.Value).ToString("D3")}";
+                var data = ((ToolStripMenuItem)sender).Tag as AlbumDto;
+                var path = GetDirName(txtMusicPath.Text);
 
-                if (magdata.Contains(tagName))
+                while (data != null)
                 {
-                    break;
-                } else
-                {
-                    magdata.Add(tagName);
-                    File.WriteAllLines(magPath, magdata.ToArray());
+                    var magPath = path.Substring(0, path.Length - 6) + data.Path + "\\" + data.Name + "\\magdata";
+                    var magFile = File.ReadAllLines(magPath);
+                    var magdata = new List<string>(magFile);
+                    var tagName = $"_aerostat{Decimal.ToInt32(aerostatUpDown.Value).ToString("D3")}";
 
-                    var dvd = new DVD()
+                    if (magdata.Contains(tagName))
                     {
-                        AlbumId = data.Id,
-                        Name = tagName
-                    };
-                    _ctx.DVDs.Add(dvd);
-                    _ctx.SaveChanges();
+                        break;
+                    }
+                    else
+                    {
+                        magdata.Add(tagName);
+                        File.WriteAllLines(magPath, magdata.ToArray());
 
-                }
+                        var dvd = new DVD()
+                        {
+                            AlbumId = data.Id,
+                            Name = tagName
+                        };
+                        _ctx.DVDs.Add(dvd);
+                        _ctx.SaveChanges();
 
-                data.Dvds.Add(tagName);
-                tlwAlbums.RefreshObject(data);
+                    }
 
-                if (data.ParentId.HasValue)
-                {
-                    data = _treeList.Single(x => x.Id == data.ParentId);
-                } else
-                {
-                    break;
+                    data.Dvds.Add(tagName);
+                    tlwAlbums.RefreshObject(data);
+
+                    if (data.ParentId.HasValue)
+                    {
+                        data = _treeList.Single(x => x.Id == data.ParentId);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
-
         }
     }
 }
