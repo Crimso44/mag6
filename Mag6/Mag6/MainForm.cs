@@ -322,7 +322,9 @@ namespace Mag6
                     }
                 }
             }
-            catch { }
+            catch (Exception e) {
+                MessageBox.Show(e.Message);
+            }
 
             // удаляем не найденные песни
             if (songsToDel.Any())
@@ -1136,6 +1138,10 @@ namespace Mag6
             var data = ((ToolStripMenuItem)sender).Tag as AlbumDto;
             var path = GetDirName(txtMusicPath.Text);
             path = path.Substring(0, path.Length - 6) + data.Path + "\\" + data.Name + "\\magdata";
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, "");
+            }
             var magFile = File.ReadAllLines(path);
             var magdata = new List<string>(magFile);
 
