@@ -36,14 +36,16 @@ namespace Mag6
                 if (dir.Exists)
                 {
                     var files = dir.GetFiles("*.jpg").OrderBy(x => x.Name).ToList();
-                    if (!files.Any()) return;
-                    var file = files.Where(x => x.Name.ToLower() == "folder.jpg").FirstOrDefault();
-                    if (file == null)
-                        file = files.Where(x => x.Name.ToLower() == "cover.jpg").FirstOrDefault();
-                    if (file == null)
+                    if (!files.Any())
                     {
-                        file = files.Where(x => x.Name.ToLower().Contains("front")).FirstOrDefault();
+                        files = dir.GetFiles("*.jpeg").OrderBy(x => x.Name).ToList();
+                        if (!files.Any()) return;
                     }
+                    var file = files.Where(x => x.Name.ToLower().Contains("folder")).FirstOrDefault();
+                    if (file == null)
+                        file = files.Where(x => x.Name.ToLower().Contains("cover")).FirstOrDefault();
+                    if (file == null)
+                        file = files.Where(x => x.Name.ToLower().Contains("front")).FirstOrDefault();
                     if (file == null)
                         file = files[0];
 
