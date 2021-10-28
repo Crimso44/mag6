@@ -33,10 +33,15 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtMusicPath = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.bCheckFiles = new System.Windows.Forms.Button();
+            this.bEditStyle = new System.Windows.Forms.CheckBox();
             this.aerostatUpDown = new System.Windows.Forms.NumericUpDown();
             this.bSearchNext = new System.Windows.Forms.Button();
             this.cbSearchSongs = new System.Windows.Forms.CheckBox();
@@ -72,8 +77,20 @@
             this.tDestination = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.dwDvds = new System.Windows.Forms.DataGridView();
             this.nameDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
+            this.dwGenres = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dsGenres = new System.Data.DataSet();
+            this.dataTable1 = new System.Data.DataTable();
+            this.dataColumn8 = new System.Data.DataColumn();
+            this.dwStyles = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dsStyles = new System.Data.DataSet();
+            this.dataTable2 = new System.Data.DataTable();
+            this.dataColumn9 = new System.Data.DataColumn();
             this.tlwAlbums = new BrightIdeasSoftware.TreeListView();
             this.olvName = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvDuration = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -93,6 +110,9 @@
             this.miToFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.miHidden = new System.Windows.Forms.ToolStripMenuItem();
             this.aerostatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.discogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.genreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.styleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -112,7 +132,21 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
+            this.splitContainer3.Panel1.SuspendLayout();
+            this.splitContainer3.Panel2.SuspendLayout();
+            this.splitContainer3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dwDvds)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
+            this.splitContainer4.Panel1.SuspendLayout();
+            this.splitContainer4.Panel2.SuspendLayout();
+            this.splitContainer4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dwGenres)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dsGenres)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTable1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dwStyles)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dsStyles)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tlwAlbums)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAlbum)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dwSongs)).BeginInit();
@@ -148,6 +182,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.bCheckFiles);
+            this.panel2.Controls.Add(this.bEditStyle);
             this.panel2.Controls.Add(this.aerostatUpDown);
             this.panel2.Controls.Add(this.bSearchNext);
             this.panel2.Controls.Add(this.cbSearchSongs);
@@ -162,6 +198,30 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(814, 27);
             this.panel2.TabIndex = 1;
+            // 
+            // bCheckFiles
+            // 
+            this.bCheckFiles.Location = new System.Drawing.Point(652, 3);
+            this.bCheckFiles.Name = "bCheckFiles";
+            this.bCheckFiles.Size = new System.Drawing.Size(75, 23);
+            this.bCheckFiles.TabIndex = 12;
+            this.bCheckFiles.Text = "check files";
+            this.bCheckFiles.UseVisualStyleBackColor = true;
+            this.bCheckFiles.Click += new System.EventHandler(this.bCheckFiles_Click);
+            // 
+            // bEditStyle
+            // 
+            this.bEditStyle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bEditStyle.Appearance = System.Windows.Forms.Appearance.Button;
+            this.bEditStyle.AutoSize = true;
+            this.bEditStyle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bEditStyle.Image = ((System.Drawing.Image)(resources.GetObject("bEditStyle.Image")));
+            this.bEditStyle.Location = new System.Drawing.Point(733, 2);
+            this.bEditStyle.Name = "bEditStyle";
+            this.bEditStyle.Size = new System.Drawing.Size(24, 24);
+            this.bEditStyle.TabIndex = 11;
+            this.toolTip1.SetToolTip(this.bEditStyle, "Редактировать стили");
+            this.bEditStyle.UseVisualStyleBackColor = true;
             // 
             // aerostatUpDown
             // 
@@ -503,33 +563,60 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.dwDvds);
+            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
             // 
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.tlwAlbums);
             this.splitContainer2.Size = new System.Drawing.Size(447, 437);
-            this.splitContainer2.SplitterDistance = 86;
+            this.splitContainer2.SplitterDistance = 135;
             this.splitContainer2.TabIndex = 4;
+            // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.Controls.Add(this.dwDvds);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
+            this.splitContainer3.Size = new System.Drawing.Size(135, 437);
+            this.splitContainer3.SplitterDistance = 69;
+            this.splitContainer3.TabIndex = 1;
             // 
             // dwDvds
             // 
             this.dwDvds.AllowUserToAddRows = false;
             this.dwDvds.AllowUserToDeleteRows = false;
+            this.dwDvds.AllowUserToResizeRows = false;
             this.dwDvds.AutoGenerateColumns = false;
+            this.dwDvds.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dwDvds.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dwDvds.ColumnHeadersVisible = false;
             this.dwDvds.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn1});
             this.dwDvds.DataMember = "Dvds";
             this.dwDvds.DataSource = this.dsDvds;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dwDvds.DefaultCellStyle = dataGridViewCellStyle1;
             this.dwDvds.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dwDvds.Location = new System.Drawing.Point(0, 0);
             this.dwDvds.Name = "dwDvds";
             this.dwDvds.ReadOnly = true;
             this.dwDvds.RowHeadersVisible = false;
             this.dwDvds.RowTemplate.Height = 18;
-            this.dwDvds.Size = new System.Drawing.Size(86, 437);
+            this.dwDvds.Size = new System.Drawing.Size(69, 437);
             this.dwDvds.TabIndex = 0;
             this.dwDvds.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dwDvds_CellClick);
             // 
@@ -540,6 +627,140 @@
             this.nameDataGridViewTextBoxColumn1.HeaderText = "Name";
             this.nameDataGridViewTextBoxColumn1.Name = "nameDataGridViewTextBoxColumn1";
             this.nameDataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // splitContainer4
+            // 
+            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer4.Name = "splitContainer4";
+            this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer4.Panel1
+            // 
+            this.splitContainer4.Panel1.Controls.Add(this.dwGenres);
+            // 
+            // splitContainer4.Panel2
+            // 
+            this.splitContainer4.Panel2.Controls.Add(this.dwStyles);
+            this.splitContainer4.Size = new System.Drawing.Size(62, 437);
+            this.splitContainer4.SplitterDistance = 156;
+            this.splitContainer4.TabIndex = 0;
+            // 
+            // dwGenres
+            // 
+            this.dwGenres.AllowUserToAddRows = false;
+            this.dwGenres.AllowUserToDeleteRows = false;
+            this.dwGenres.AllowUserToResizeRows = false;
+            this.dwGenres.AutoGenerateColumns = false;
+            this.dwGenres.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dwGenres.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dwGenres.ColumnHeadersVisible = false;
+            this.dwGenres.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1});
+            this.dwGenres.DataMember = "Genres";
+            this.dwGenres.DataSource = this.dsGenres;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dwGenres.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dwGenres.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dwGenres.Location = new System.Drawing.Point(0, 0);
+            this.dwGenres.Name = "dwGenres";
+            this.dwGenres.ReadOnly = true;
+            this.dwGenres.RowHeadersVisible = false;
+            this.dwGenres.RowTemplate.Height = 18;
+            this.dwGenres.Size = new System.Drawing.Size(62, 156);
+            this.dwGenres.TabIndex = 1;
+            this.dwGenres.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dwGenres_CellClick);
+            this.dwGenres.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dwGenres_CellDoubleClick);
+            this.dwGenres.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dwGenres_CellFormatting);
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Name";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Name";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            // 
+            // dsGenres
+            // 
+            this.dsGenres.DataSetName = "NewDataSet";
+            this.dsGenres.Tables.AddRange(new System.Data.DataTable[] {
+            this.dataTable1});
+            // 
+            // dataTable1
+            // 
+            this.dataTable1.Columns.AddRange(new System.Data.DataColumn[] {
+            this.dataColumn8});
+            this.dataTable1.TableName = "Genres";
+            // 
+            // dataColumn8
+            // 
+            this.dataColumn8.Caption = "Name";
+            this.dataColumn8.ColumnName = "Name";
+            // 
+            // dwStyles
+            // 
+            this.dwStyles.AllowUserToAddRows = false;
+            this.dwStyles.AllowUserToDeleteRows = false;
+            this.dwStyles.AllowUserToResizeRows = false;
+            this.dwStyles.AutoGenerateColumns = false;
+            this.dwStyles.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.dwStyles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dwStyles.ColumnHeadersVisible = false;
+            this.dwStyles.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn2});
+            this.dwStyles.DataMember = "Styles";
+            this.dwStyles.DataSource = this.dsStyles;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dwStyles.DefaultCellStyle = dataGridViewCellStyle3;
+            this.dwStyles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dwStyles.Location = new System.Drawing.Point(0, 0);
+            this.dwStyles.Name = "dwStyles";
+            this.dwStyles.ReadOnly = true;
+            this.dwStyles.RowHeadersVisible = false;
+            this.dwStyles.RowTemplate.Height = 18;
+            this.dwStyles.Size = new System.Drawing.Size(62, 277);
+            this.dwStyles.TabIndex = 1;
+            this.dwStyles.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dwStyles_CellClick);
+            this.dwStyles.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dwStyles_CellDoubleClick);
+            this.dwStyles.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dwGenres_CellFormatting);
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "Name";
+            this.dataGridViewTextBoxColumn2.HeaderText = "Name";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            // 
+            // dsStyles
+            // 
+            this.dsStyles.DataSetName = "NewDataSet";
+            this.dsStyles.Tables.AddRange(new System.Data.DataTable[] {
+            this.dataTable2});
+            // 
+            // dataTable2
+            // 
+            this.dataTable2.Columns.AddRange(new System.Data.DataColumn[] {
+            this.dataColumn9});
+            this.dataTable2.TableName = "Styles";
+            // 
+            // dataColumn9
+            // 
+            this.dataColumn9.Caption = "Name";
+            this.dataColumn9.ColumnName = "Name";
             // 
             // tlwAlbums
             // 
@@ -560,7 +781,7 @@
             this.tlwAlbums.Location = new System.Drawing.Point(0, 0);
             this.tlwAlbums.Name = "tlwAlbums";
             this.tlwAlbums.ShowGroups = false;
-            this.tlwAlbums.Size = new System.Drawing.Size(357, 437);
+            this.tlwAlbums.Size = new System.Drawing.Size(308, 437);
             this.tlwAlbums.SmallImageList = this.imageList1;
             this.tlwAlbums.TabIndex = 6;
             this.tlwAlbums.UseCompatibleStateImageBehavior = false;
@@ -666,10 +887,10 @@
             // FileSize
             // 
             this.FileSize.DataPropertyName = "Size";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle1.Format = "N0";
-            dataGridViewCellStyle1.NullValue = null;
-            this.FileSize.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "N0";
+            dataGridViewCellStyle4.NullValue = null;
+            this.FileSize.DefaultCellStyle = dataGridViewCellStyle4;
             this.FileSize.HeaderText = "Size";
             this.FileSize.Name = "FileSize";
             this.FileSize.ReadOnly = true;
@@ -678,8 +899,8 @@
             // Bitrate
             // 
             this.Bitrate.DataPropertyName = "Bitrate";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Bitrate.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Bitrate.DefaultCellStyle = dataGridViewCellStyle5;
             this.Bitrate.HeaderText = "Bitrate";
             this.Bitrate.Name = "Bitrate";
             this.Bitrate.ReadOnly = true;
@@ -696,8 +917,8 @@
             // Duration
             // 
             this.Duration.DataPropertyName = "Duration";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.Duration.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.Duration.DefaultCellStyle = dataGridViewCellStyle6;
             this.Duration.HeaderText = "Duration";
             this.Duration.Name = "Duration";
             this.Duration.ReadOnly = true;
@@ -714,9 +935,12 @@
             this.mAlbums.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miToFolder,
             this.miHidden,
-            this.aerostatToolStripMenuItem});
+            this.aerostatToolStripMenuItem,
+            this.discogsToolStripMenuItem,
+            this.genreToolStripMenuItem,
+            this.styleToolStripMenuItem});
             this.mAlbums.Name = "mAlbums";
-            this.mAlbums.Size = new System.Drawing.Size(157, 70);
+            this.mAlbums.Size = new System.Drawing.Size(157, 136);
             // 
             // miToFolder
             // 
@@ -738,6 +962,27 @@
             this.aerostatToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.aerostatToolStripMenuItem.Text = "Аэростат";
             this.aerostatToolStripMenuItem.Click += new System.EventHandler(this.aerostatToolStripMenuItem_Click);
+            // 
+            // discogsToolStripMenuItem
+            // 
+            this.discogsToolStripMenuItem.Name = "discogsToolStripMenuItem";
+            this.discogsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.discogsToolStripMenuItem.Text = "Discogs";
+            this.discogsToolStripMenuItem.Click += new System.EventHandler(this.discogsToolStripMenuItem_Click);
+            // 
+            // genreToolStripMenuItem
+            // 
+            this.genreToolStripMenuItem.Name = "genreToolStripMenuItem";
+            this.genreToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.genreToolStripMenuItem.Text = "Жанр";
+            this.genreToolStripMenuItem.Click += new System.EventHandler(this.genreToolStripMenuItem_Click);
+            // 
+            // styleToolStripMenuItem
+            // 
+            this.styleToolStripMenuItem.Name = "styleToolStripMenuItem";
+            this.styleToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.styleToolStripMenuItem.Text = "Стиль";
+            this.styleToolStripMenuItem.Click += new System.EventHandler(this.styleToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -775,7 +1020,21 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.splitContainer3.Panel1.ResumeLayout(false);
+            this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            this.splitContainer3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dwDvds)).EndInit();
+            this.splitContainer4.Panel1.ResumeLayout(false);
+            this.splitContainer4.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
+            this.splitContainer4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dwGenres)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dsGenres)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTable1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dwStyles)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dsStyles)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataTable2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tlwAlbums)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAlbum)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dwSongs)).EndInit();
@@ -847,5 +1106,22 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Duration;
         private System.Windows.Forms.ToolStripMenuItem aerostatToolStripMenuItem;
         private System.Windows.Forms.NumericUpDown aerostatUpDown;
+        private System.Windows.Forms.ToolStripMenuItem discogsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem genreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem styleToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.SplitContainer splitContainer4;
+        private System.Windows.Forms.DataGridView dwGenres;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridView dwStyles;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Data.DataSet dsGenres;
+        private System.Data.DataTable dataTable1;
+        private System.Data.DataColumn dataColumn8;
+        private System.Data.DataSet dsStyles;
+        private System.Data.DataTable dataTable2;
+        private System.Data.DataColumn dataColumn9;
+        private System.Windows.Forms.CheckBox bEditStyle;
+        private System.Windows.Forms.Button bCheckFiles;
     }
 }

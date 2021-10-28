@@ -11,6 +11,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,6 +24,8 @@ namespace Mag6
         private Mag6Entities _ctx;
         private bool _stop;
         private string _filter = "";
+        private string _filterGenre = "";
+        private string _filterStyle = "";
         private List<AlbumDto> _treeList = new List<AlbumDto>();
         private List<string> _loadErrors = new List<string>();
         private List<AlbumDto> _searchResults = new List<AlbumDto>();
@@ -33,6 +36,8 @@ namespace Mag6
         private List<string> _imagesLoaded = new List<string>();
         private List<string> _imagesToLoad = new List<string>();
         private List<KeyImageDto> _imagesAlmostLoaded = new List<KeyImageDto>();
+        private List<ToolStripMenuItem> _genreMenuItems = new List<ToolStripMenuItem>();
+        private List<ToolStripMenuItem> _styleMenuItems = new List<ToolStripMenuItem>();
 
         public MainForm()
         {
@@ -187,6 +192,16 @@ namespace Mag6
 
         private void LoadRoot()
         {
+            var currents = new List<int>();
+            if (tlwAlbums.SelectedItem != null) {
+                var selected = tlwAlbums.SelectedObject as AlbumDto;
+                while (selected != null)
+                {
+                    currents.Add(selected.Id);
+                    selected = selected.ParentId.HasValue ? _treeList.Single(x => x.Id == selected.ParentId) : null;
+                }
+            }
+
             _treeList.Clear();
 
             // загрузка корневой ноды дерева
@@ -199,24 +214,37 @@ namespace Mag6
 
                 LoadChildrenTree(alb);
 
+                var curr = new List<AlbumDto>();
                 // ... и дочерних, для плюсиков в дереве
                 foreach (var ch in alb.ChildIds)
                 {
-                    var chAlb = _treeList.Where(x => x.Id == ch).First();
-                    LoadChildrenTree(chAlb);
+                    var chAlb = _treeList.First(x => x.Id == ch);
+                    LoadChildrenTree(chAlb, currents, curr);
                 }
 
                 tlwAlbums.Expand(alb);
+                if (curr.Any())
+                {
+                    foreach (var cr in curr)
+                    {
+                        tlwAlbums.Expand(cr);
+                    }
+                    tlwAlbums.Reveal(curr.Last(), true);
+                }
             }
         }
 
-        private void LoadChildrenTree(AlbumDto rootAlb)
+        private void LoadChildrenTree(AlbumDto rootAlb, List<int> currents = null, List<AlbumDto> curr = null)
         {
             if (!rootAlb.ChildIds.Any())
             {
                 var childQry = _ctx.Albums.Where(x => x.ParentId == rootAlb.Id);
                 if (!string.IsNullOrEmpty(_filter))
                     childQry = childQry.Where(x => x.DVDs.Select(y => y.Name).ToList().Contains(_filter));
+                if (!string.IsNullOrEmpty(_filterGenre))
+                    childQry = childQry.Where(x => x.DVDs.Select(y => y.Name).ToList().Contains(_filterGenre));
+                if (!string.IsNullOrEmpty(_filterStyle))
+                    childQry = childQry.Where(x => x.DVDs.Select(y => y.Name).ToList().Contains(_filterStyle));
                 var children = childQry.OrderBy(x => x.Name).ToList();
                 foreach (var ch in children)
                 {
@@ -227,6 +255,16 @@ namespace Mag6
                     rootAlb.ChildIds.Add(alb.Id);
                 }
                 tlwAlbums.RefreshObject(rootAlb);
+
+                if (currents?.Contains(rootAlb.Id) ?? false)
+                {
+                    curr.Add(rootAlb);
+                    foreach (var ch in rootAlb.ChildIds)
+                    {
+                        var chAlb = _treeList.First(x => x.Id == ch);
+                        LoadChildrenTree(chAlb, currents, curr);
+                    }
+                }
             }
         }
 
@@ -391,7 +429,15 @@ namespace Mag6
                     foreach (var dvd in res.Dvds)
                     {
                         if (!innerDvds.Contains(dvd) && !dvd.StartsWith("_"))
-                            _loadErrors.Add($"- {dvd}: {parentAlbum.Path}\\{parentAlbum.Name}");
+                        {
+                            if (dvd.StartsWith("G:") || dvd.StartsWith("S:"))
+                            {
+                                if (innerDvds.Any(x => x.StartsWith("G:") || x.StartsWith("S:")))
+                                    _loadErrors.Add($"- {dvd}: {parentAlbum.Path}\\{parentAlbum.Name}");
+                            }
+                            else
+                                _loadErrors.Add($"- {dvd}: {parentAlbum.Path}\\{parentAlbum.Name}");
+                        }
                     }
                     foreach (var dvd in innerDvds)
                     {
@@ -637,23 +683,84 @@ namespace Mag6
 
         private void FillDvds()
         {
+            var genre = dwGenres.CurrentCell != null ? GetNameWithoutCount((string)dwGenres.CurrentCell.Value) : "";
+            var style = dwStyles.CurrentCell != null ? GetNameWithoutCount((string)dwStyles.CurrentCell.Value) : "";
+
             dsDvds.Tables[0].Clear();
+            dsGenres.Tables[0].Clear();
+            dsStyles.Tables[0].Clear();
+            
             var row = dsDvds.Tables[0].NewRow();
             row["Name"] = "Все";
             dsDvds.Tables[0].Rows.Add(row);
-            var dvds = _ctx.DVDs.Select(x => x.Name).Distinct().OrderBy(x => x).ToList();
+            row = dsGenres.Tables[0].NewRow();
+            row["Name"] = "Все";
+            dsGenres.Tables[0].Rows.Add(row);
+            row = dsStyles.Tables[0].NewRow();
+            row["Name"] = "Все";
+            dsStyles.Tables[0].Rows.Add(row);
+
+            var dvds = _ctx.DVDs.Select(x => x.Name).GroupBy(g => g).OrderBy(x => x.Key).ToList();
             foreach(var dvd in dvds)
             {
-                if (!dvd.StartsWith("_"))
+                if (dvd.Key.StartsWith("G:"))
+                {
+                    row = dsGenres.Tables[0].NewRow();
+                    row["Name"] = $"{dvd.Key.Substring(2)} ({dvd.Count()})";
+                    dsGenres.Tables[0].Rows.Add(row);
+                } else if (dvd.Key.StartsWith("S:"))
+                {
+                    row = dsStyles.Tables[0].NewRow();
+                    row["Name"] = $"{dvd.Key.Substring(2)} ({dvd.Count()})";
+                    dsStyles.Tables[0].Rows.Add(row);
+                } else if (!dvd.Key.StartsWith("_"))
                 {
                     row = dsDvds.Tables[0].NewRow();
-                    row["Name"] = dvd;
+                    row["Name"] = dvd.Key;
                     dsDvds.Tables[0].Rows.Add(row);
                 }
             }
             dwDvds.DataSource = null;
             dwDvds.DataSource = dsDvds;
             dwDvds.DataMember = "Dvds";
+            dwGenres.DataSource = null;
+            dwGenres.DataSource = dsGenres;
+            dwGenres.DataMember = "Genres";
+            SelectGenre(genre);
+            dwStyles.DataSource = null;
+            dwStyles.DataSource = dsStyles;
+            dwStyles.DataMember = "Styles";
+            SelectStyle(style);
+        }
+
+        private void SelectGenre(string genre)
+        {
+            if (!string.IsNullOrEmpty(genre))
+            {
+                foreach (DataGridViewRow r in dwGenres.Rows)
+                {
+                    if (((string)r.Cells[0].Value).StartsWith(genre + " ("))
+                    {
+                        dwGenres.CurrentCell = r.Cells[0];
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void SelectStyle(string style)
+        {
+            if (!string.IsNullOrEmpty(style))
+            {
+                foreach (DataGridViewRow r in dwStyles.Rows)
+                {
+                    if (((string)r.Cells[0].Value).StartsWith(style + " ("))
+                    {
+                        dwStyles.CurrentCell = r.Cells[0];
+                        break;
+                    }
+                }
+            }
         }
 
         private void bStop_Click(object sender, EventArgs e)
@@ -881,6 +988,24 @@ namespace Mag6
                     r.Selected = data.Dvds.Contains((string)r.Cells[0].Value);
                 }
 
+                foreach (DataGridViewRow r in dwGenres.Rows)
+                {
+                    var s = "G:" + (string)r.Cells[0].Value;
+                    r.Selected = data.Dvds.Any(x => s.StartsWith(x + " ("));
+                }
+
+                foreach (DataGridViewRow r in dwStyles.Rows)
+                {
+                    var s = "S:" + (string)r.Cells[0].Value;
+                    if (bEditStyle.Checked)
+                    {
+                        r.Selected = data.Dvds.Any(x => s.StartsWith(x + " ("));
+                    } else
+                    {
+                        r.Visible = r.Index == 0 || data.Dvds.Any(x => s.StartsWith(x + " ("));
+                    }
+                }
+
                 var key = data.Id.ToString();
                 if (imagesBig.Images.ContainsKey(key))
                 {
@@ -900,9 +1025,13 @@ namespace Mag6
             else if (data.Dvds.Any(x => x.StartsWith("_"))) {
                 e.Item.ForeColor = Color.DarkGreen;
             }
-            if (data.Dvds.Count(x => !x.StartsWith("_")) == 1)
+            if (data.Dvds.Count(x => !x.StartsWith("_") && !x.StartsWith("G:") && !x.StartsWith("S:")) == 1)
             {
                 e.Item.Font = new Font(tlwAlbums.Font, FontStyle.Bold);
+            }
+            if (!data.IsHidden && data.Dvds.Count(x => x.StartsWith("G:")) == 0 && data.Dvds.Count(x => x.StartsWith("S:")) == 0)
+            {
+                e.Item.BackColor = Color.FromArgb(0xff, 0xee, 0xee, 0xee);
             }
         }
 
@@ -1122,6 +1251,9 @@ namespace Mag6
                 miHidden.Tag = e.Model;
                 miToFolder.Tag = e.Model;
                 aerostatToolStripMenuItem.Tag = e.Model;
+                discogsToolStripMenuItem.Tag = e.Model;
+                genreToolStripMenuItem.Tag = e.Model;
+                styleToolStripMenuItem.Tag = e.Model;
             }
         }
 
@@ -1210,6 +1342,300 @@ namespace Mag6
                     }
                 }
             }
+        }
+
+        private void discogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var data = ((ToolStripMenuItem)sender).Tag as AlbumDto;
+            var q = nameNoYear(data.Name).Replace("&", " ").Replace("  ", " ").Replace(" ", "+");
+
+            if (data.ParentId.HasValue)
+            {
+                var parentData = _treeList.Single(x => x.Id == data.ParentId.Value);
+                q += "+" + nameNoYear(parentData.Name).Replace("&", " ").Replace("  ", " ").Replace(" ", "+");
+            }
+
+            var url =
+                $"https://www.discogs.com/ru/search/?q={q}&type=all";
+            System.Diagnostics.Process.Start(url);
+        }
+
+        private string nameNoYear(string name)
+        {
+            var reg = Regex.Match(name, "^\\d+(\\-\\d+)?\\ \\-\\ (.+)$");
+            if (reg.Success) return reg.Groups[2].Value;
+            return name;
+        }
+
+
+
+        private void AddGenre(AlbumDto data, string genre, string pre)
+        {
+            var isRemove = data.Dvds.Contains($"{pre}{genre}");
+
+            var path = GetDirName(txtMusicPath.Text);
+
+            while (data != null)
+            {
+                var magPath = path.Substring(0, path.Length - 6) + data.Path + "\\" + data.Name + "\\magdata";
+                var magFile = File.ReadAllLines(magPath);
+                var magdata = new List<string>(magFile);
+                var tagName = $"{pre}{genre}";
+
+                if (isRemove)
+                {
+                    var children = (
+                        from a in _ctx.Albums
+                        join d in _ctx.DVDs on a.Id equals d.AlbumId
+                        where a.ParentId == data.Id && d.Name == tagName
+                        select d.Name).ToList();
+                    if (children.Any())
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        magdata.Remove(tagName);
+                        File.WriteAllLines(magPath, magdata.ToArray());
+
+                        var dvd = _ctx.DVDs.Single(x => x.AlbumId == data.Id && x.Name == tagName);
+                        _ctx.DVDs.Remove(dvd);
+                        _ctx.SaveChanges();
+
+                        data.Dvds.Remove(tagName);
+                    }
+                }
+                else
+                {
+                    if (magdata.Contains(tagName))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        magdata.Add(tagName);
+                        File.WriteAllLines(magPath, magdata.ToArray());
+
+                        var dvd = new DVD()
+                        {
+                            AlbumId = data.Id,
+                            Name = tagName
+                        };
+                        _ctx.DVDs.Add(dvd);
+                        _ctx.SaveChanges();
+
+                    }
+
+                    data.Dvds.Add(tagName);
+                }
+                tlwAlbums.RefreshObject(data);
+
+                if (data.ParentId.HasValue)
+                {
+                    data = _treeList.Single(x => x.Id == data.ParentId);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+        }
+
+
+        private string GetNameWithoutCount(string name)
+        {
+            var res = Regex.Match(name, "^(.+)\\ \\(\\d+\\)$");
+            if (res.Success) return res.Groups[1].Value;
+            return name;
+        }
+
+        private void dwGenres_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!bEditStyle.Checked)
+            {
+                var newFlt = "";
+                if (e.RowIndex > 0)
+                    newFlt = "G:" + GetNameWithoutCount((string)dwGenres.Rows[e.RowIndex].Cells[0].Value);
+
+                if (_filterGenre != newFlt)
+                {
+                    _filterGenre = newFlt;
+                    LoadRoot();
+                }
+            }
+        }
+
+
+
+        private void dwStyles_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!bEditStyle.Checked)
+            {
+                var newFlt = "";
+                if (e.RowIndex > 0)
+                    newFlt = "S:" + GetNameWithoutCount((string)dwStyles.Rows[e.RowIndex].Cells[0].Value);
+
+                if (_filterStyle != newFlt)
+                {
+                    _filterStyle = newFlt;
+                    LoadRoot();
+                }
+            }
+        }
+
+        private void genreToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (bEditStyle.Checked) {
+                var data = ((ToolStripMenuItem)sender).Tag as AlbumDto;
+                string genre;
+                var isAdd = false;
+
+                if (dwGenres.CurrentCell == null || dwGenres.CurrentCell.RowIndex == 0)
+                {
+                    genre = tSearch.Text;
+                    isAdd = true;
+                } 
+                else
+                    genre = GetNameWithoutCount((string)dwGenres.CurrentCell.Value);
+                if (!string.IsNullOrWhiteSpace(genre))
+                {
+                    AddGenre(data, genre, "G:");
+                    if (isAdd)
+                    {
+                        SelectGenre(genre);
+                        FillDvds();
+                    }
+                }
+            }
+        }
+
+        private void styleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (bEditStyle.Checked)
+            {
+                var data = ((ToolStripMenuItem)sender).Tag as AlbumDto;
+                string style;
+                var isAdd = false;
+
+                if (dwStyles.CurrentCell == null || dwStyles.CurrentCell.RowIndex == 0)
+                {
+                    style = tSearch.Text;
+                    isAdd = true;
+                }
+                else
+                    style = GetNameWithoutCount((string)dwStyles.CurrentCell.Value);
+
+                if (!string.IsNullOrWhiteSpace(style))
+                {
+                    AddGenre(data, style, "S:");
+                    if (isAdd)
+                    {
+                        SelectStyle(style);
+                        FillDvds();
+                    }
+                }
+            }
+        }
+
+        private void dwGenres_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            DataGridViewRow row = ((DataGridView)sender).Rows[e.RowIndex];
+            if (row.Cells[0].Value?.ToString().Contains("Rock") ?? false)
+                row.Cells[0].Style.BackColor = Color.FromArgb(0xdd, 0xff, 0xdd);
+            else if (row.Cells[0].Value?.ToString().Contains("Blues") ?? false)
+                row.Cells[0].Style.BackColor = Color.FromArgb(0xdd, 0xdd, 0xff);
+            else if (row.Cells[0].Value?.ToString().Contains("Jazz") ?? false)
+                row.Cells[0].Style.BackColor = Color.FromArgb(0xff, 0xdd, 0xdd);
+        }
+
+        private void dwGenres_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (bEditStyle.Checked && tlwAlbums.SelectedItem != null)
+            {
+                var data = tlwAlbums.SelectedObject as AlbumDto;
+
+                string genre;
+                var isAdd = false;
+
+                if (dwGenres.CurrentCell == null || dwGenres.CurrentCell.RowIndex == 0)
+                {
+                    genre = tSearch.Text;
+                    isAdd = true;
+                }
+                else
+                    genre = GetNameWithoutCount((string)dwGenres.CurrentCell.Value);
+                if (!string.IsNullOrWhiteSpace(genre))
+                {
+                    AddGenre(data, genre, "G:");
+                    if (isAdd)
+                    {
+                        SelectGenre(genre);
+                        FillDvds();
+                    }
+                }
+            }
+        }
+
+        private void dwStyles_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (bEditStyle.Checked && tlwAlbums.SelectedItem != null)
+            {
+                var data = tlwAlbums.SelectedObject as AlbumDto;
+
+                string style;
+                var isAdd = false;
+
+                if (dwStyles.CurrentCell == null || dwStyles.CurrentCell.RowIndex == 0)
+                {
+                    style = tSearch.Text;
+                    isAdd = true;
+                }
+                else
+                    style = GetNameWithoutCount((string)dwStyles.CurrentCell.Value);
+
+                if (!string.IsNullOrWhiteSpace(style))
+                {
+                    AddGenre(data, style, "S:");
+                    if (isAdd)
+                    {
+                        SelectStyle(style);
+                        FillDvds();
+                    }
+                }
+            }
+        }
+
+        private void bCheckFiles_Click(object sender, EventArgs e)
+        {
+            var files = (
+                from a in _ctx.Albums
+                join s in _ctx.Songs on a.Id equals s.AlbumId
+                orderby a.Path, a.Name, s.FileName
+                select new { a.Path, a.Name, s.FileName }).ToList();
+            var res = "";
+            var path = GetDirName(txtMusicPath.Text);
+            path = path.Substring(0, path.Length - 6);
+            var fPath = "";
+            foreach (var f in files)
+            {
+                var filePath = $"{path}{f.Path}\\{f.Name}\\{f.FileName}";
+                if (!File.Exists(filePath))
+                {
+                    res += filePath + "\n";
+                }
+
+                if (fPath != f.Path)
+                {
+                    fPath = f.Path;
+                    label1.Text = fPath;
+                    Application.DoEvents();
+                }
+
+            }
+            File.WriteAllText(path + "missed.txt", res);
+
+            MessageBox.Show("OK!");
         }
     }
 }

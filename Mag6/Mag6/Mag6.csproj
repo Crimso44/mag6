@@ -157,6 +157,7 @@
     <Content Include="icons\baseline_navigate_next_black_18dp.png" />
     <Content Include="icons\baseline_refresh_black_18dp.png" />
     <Content Include="icons\baseline_search_black_18dp.png" />
+    <None Include="icons\outline_emoji_symbols_black_18dp.png" />
     <Content Include="icons\twotone_music_video_black_18dp.ico" />
     <Content Include="icons\twotone_music_video_black_18dp.png" />
     <Content Include="Mag6.Context.tt">
