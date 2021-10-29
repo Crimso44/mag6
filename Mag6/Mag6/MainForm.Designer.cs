@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtMusicPath = new System.Windows.Forms.TextBox();
@@ -201,6 +201,7 @@
             // 
             // bCheckFiles
             // 
+            this.bCheckFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bCheckFiles.Location = new System.Drawing.Point(652, 3);
             this.bCheckFiles.Name = "bCheckFiles";
             this.bCheckFiles.Size = new System.Drawing.Size(75, 23);
@@ -222,6 +223,7 @@
             this.bEditStyle.TabIndex = 11;
             this.toolTip1.SetToolTip(this.bEditStyle, "Редактировать стили");
             this.bEditStyle.UseVisualStyleBackColor = true;
+            this.bEditStyle.Click += new System.EventHandler(this.bEditStyle_Click);
             // 
             // aerostatUpDown
             // 
@@ -235,6 +237,8 @@
             this.aerostatUpDown.Name = "aerostatUpDown";
             this.aerostatUpDown.Size = new System.Drawing.Size(48, 20);
             this.aerostatUpDown.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.aerostatUpDown, "Номер выпуска \"Аэростата\"");
+            this.aerostatUpDown.ValueChanged += new System.EventHandler(this.aerostatUpDown_ValueChanged);
             // 
             // bSearchNext
             // 
@@ -602,14 +606,14 @@
             this.nameDataGridViewTextBoxColumn1});
             this.dwDvds.DataMember = "Dvds";
             this.dwDvds.DataSource = this.dsDvds;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dwDvds.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dwDvds.DefaultCellStyle = dataGridViewCellStyle7;
             this.dwDvds.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dwDvds.Location = new System.Drawing.Point(0, 0);
             this.dwDvds.Name = "dwDvds";
@@ -659,14 +663,14 @@
             this.dataGridViewTextBoxColumn1});
             this.dwGenres.DataMember = "Genres";
             this.dwGenres.DataSource = this.dsGenres;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dwGenres.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dwGenres.DefaultCellStyle = dataGridViewCellStyle8;
             this.dwGenres.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dwGenres.Location = new System.Drawing.Point(0, 0);
             this.dwGenres.Name = "dwGenres";
@@ -717,14 +721,14 @@
             this.dataGridViewTextBoxColumn2});
             this.dwStyles.DataMember = "Styles";
             this.dwStyles.DataSource = this.dsStyles;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dwStyles.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dwStyles.DefaultCellStyle = dataGridViewCellStyle9;
             this.dwStyles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dwStyles.Location = new System.Drawing.Point(0, 0);
             this.dwStyles.Name = "dwStyles";
@@ -887,10 +891,10 @@
             // FileSize
             // 
             this.FileSize.DataPropertyName = "Size";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle4.Format = "N0";
-            dataGridViewCellStyle4.NullValue = null;
-            this.FileSize.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle10.Format = "N0";
+            dataGridViewCellStyle10.NullValue = null;
+            this.FileSize.DefaultCellStyle = dataGridViewCellStyle10;
             this.FileSize.HeaderText = "Size";
             this.FileSize.Name = "FileSize";
             this.FileSize.ReadOnly = true;
@@ -899,8 +903,8 @@
             // Bitrate
             // 
             this.Bitrate.DataPropertyName = "Bitrate";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Bitrate.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Bitrate.DefaultCellStyle = dataGridViewCellStyle11;
             this.Bitrate.HeaderText = "Bitrate";
             this.Bitrate.Name = "Bitrate";
             this.Bitrate.ReadOnly = true;
@@ -917,8 +921,8 @@
             // Duration
             // 
             this.Duration.DataPropertyName = "Duration";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.Duration.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.Duration.DefaultCellStyle = dataGridViewCellStyle12;
             this.Duration.HeaderText = "Duration";
             this.Duration.Name = "Duration";
             this.Duration.ReadOnly = true;
@@ -961,6 +965,7 @@
             this.aerostatToolStripMenuItem.Name = "aerostatToolStripMenuItem";
             this.aerostatToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.aerostatToolStripMenuItem.Text = "Аэростат";
+            this.aerostatToolStripMenuItem.Visible = false;
             this.aerostatToolStripMenuItem.Click += new System.EventHandler(this.aerostatToolStripMenuItem_Click);
             // 
             // discogsToolStripMenuItem
@@ -975,6 +980,7 @@
             this.genreToolStripMenuItem.Name = "genreToolStripMenuItem";
             this.genreToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.genreToolStripMenuItem.Text = "Жанр";
+            this.genreToolStripMenuItem.Visible = false;
             this.genreToolStripMenuItem.Click += new System.EventHandler(this.genreToolStripMenuItem_Click);
             // 
             // styleToolStripMenuItem
@@ -982,6 +988,7 @@
             this.styleToolStripMenuItem.Name = "styleToolStripMenuItem";
             this.styleToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.styleToolStripMenuItem.Text = "Стиль";
+            this.styleToolStripMenuItem.Visible = false;
             this.styleToolStripMenuItem.Click += new System.EventHandler(this.styleToolStripMenuItem_Click);
             // 
             // MainForm

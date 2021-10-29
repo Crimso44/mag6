@@ -1637,5 +1637,16 @@ namespace Mag6
 
             MessageBox.Show("OK!");
         }
+
+        private void aerostatUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            aerostatToolStripMenuItem.Visible = aerostatUpDown.Value > 0;
+        }
+
+        private void bEditStyle_Click(object sender, EventArgs e)
+        {
+            genreToolStripMenuItem.Visible = bEditStyle.Checked;
+            styleToolStripMenuItem.Visible = bEditStyle.Checked;
+        }
     }
 }
