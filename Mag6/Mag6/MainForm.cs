@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -480,6 +481,8 @@ namespace Mag6
             _ctx.SaveChanges();
 
             RecalcDurations(parentAlbum, res);
+
+            DetachAllEntities(_ctx);
 
             label1.Text = "";
             Application.DoEvents();
@@ -1647,6 +1650,18 @@ namespace Mag6
         {
             genreToolStripMenuItem.Visible = bEditStyle.Checked;
             styleToolStripMenuItem.Visible = bEditStyle.Checked;
+        }
+        public static void DetachAllEntities(DbContext ctx)
+        {
+            var changedEntriesCopy = ctx.ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Detached
+                            /*e.State == EntityState.Added ||
+                            e.State == EntityState.Modified ||
+                            e.State == EntityState.Deleted*/)
+                .ToList();
+
+            foreach (var entry in changedEntriesCopy)
+                entry.State = EntityState.Detached;
         }
     }
 }
