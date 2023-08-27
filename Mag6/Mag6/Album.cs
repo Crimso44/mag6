@@ -31,6 +31,8 @@ namespace Mag6
         public Nullable<int> Duration { get; set; }
         public Nullable<long> Size { get; set; }
         public string Bitrate { get; set; }
+        public Nullable<System.DateTime> LastUse { get; set; }
+        public Nullable<System.DateTime> PreLastUse { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Album> Album1 { get; set; }

@@ -18,6 +18,8 @@
           <Property Name="Duration" Type="int" />
           <Property Name="Size" Type="bigint" />
           <Property Name="Bitrate" Type="nvarchar" MaxLength="10" />
+          <Property Name="LastUse" Type="datetime" />
+          <Property Name="PreLastUse" Type="datetime" />
         </EntityType>
         <EntityType Name="DVD">
           <Key>
@@ -141,6 +143,8 @@
           <NavigationProperty Name="Album2" Relationship="Mag6Model.FK_Album_Album" FromRole="Album1" ToRole="Album" />
           <NavigationProperty Name="DVDs" Relationship="Mag6Model.FK_DVD_Album" FromRole="Album" ToRole="DVD" />
           <NavigationProperty Name="Songs" Relationship="Mag6Model.FK_Song_Album" FromRole="Album" ToRole="Song" />
+          <Property Name="LastUse" Type="DateTime" Precision="3" />
+          <Property Name="PreLastUse" Type="DateTime" Precision="3" />
         </EntityType>
         <Association Name="FK_Album_Album">
           <End Type="Mag6Model.Album" Role="Album" Multiplicity="0..1" />
@@ -211,6 +215,8 @@
           <EntitySetMapping Name="Albums">
             <EntityTypeMapping TypeName="Mag6Model.Album">
               <MappingFragment StoreEntitySet="Album">
+                <ScalarProperty Name="PreLastUse" ColumnName="PreLastUse" />
+                <ScalarProperty Name="LastUse" ColumnName="LastUse" />
                 <ScalarProperty Name="Bitrate" ColumnName="Bitrate" />
                 <ScalarProperty Name="Size" ColumnName="Size" />
                 <ScalarProperty Name="Duration" ColumnName="Duration" />

@@ -481,8 +481,9 @@ namespace Mag6
             _ctx.SaveChanges();
 
             RecalcDurations(parentAlbum, res);
+            _ctx.SaveChanges();
 
-            DetachAllEntities(_ctx);
+            //DetachAllEntities(_ctx);
 
             label1.Text = "";
             Application.DoEvents();
@@ -939,6 +940,8 @@ namespace Mag6
                     catch { }
 
                     uplAlbum.IsUploaded = true;
+                    uplAlbum.PreLastUse = uplAlbum.LastUse;
+                    uplAlbum.LastUse = DateTime.Now;
                     _ctx.SaveChanges();
                     albs.Remove(next);
                 }
@@ -1651,6 +1654,7 @@ namespace Mag6
             genreToolStripMenuItem.Visible = bEditStyle.Checked;
             styleToolStripMenuItem.Visible = bEditStyle.Checked;
         }
+
         public static void DetachAllEntities(DbContext ctx)
         {
             var changedEntriesCopy = ctx.ChangeTracker.Entries()
