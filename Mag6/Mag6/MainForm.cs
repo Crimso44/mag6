@@ -880,7 +880,7 @@ namespace Mag6
                 long size = 0;
                 var albs = _ctx.Albums.Where(x => !(x.IsHidden ?? false) && !(x.IsUploaded ?? false))
                     .Select(x => new { x.Id, x.Name, x.Path }).ToList()
-                    .OrderBy(x => x.Name.Reverse().ToString()).ThenBy(x => x.Path.Reverse().ToString())
+                    .OrderBy(x => new string(x.Name.Reverse().ToArray())).ThenBy(x => new string (x.Path.Reverse().ToArray()))
                     .Select(x => x.Id).ToList();
                 while (size < fullSize)
                 {
@@ -891,6 +891,8 @@ namespace Mag6
                         _ctx.SaveChanges();
 
                         albs = _ctx.Albums.Where(x => !(x.IsHidden ?? false))
+                            .Select(x => new { x.Id, x.Name, x.Path }).ToList()
+                            .OrderBy(x => new string(x.Name.Reverse().ToArray())).ThenBy(x => new string(x.Path.Reverse().ToArray()))
                             .Select(x => x.Id).ToList();
                     }
 
