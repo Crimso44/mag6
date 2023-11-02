@@ -62,19 +62,20 @@
             this.dataColumn4 = new System.Data.DataColumn();
             this.dataColumn5 = new System.Data.DataColumn();
             this.dataColumn7 = new System.Data.DataColumn();
+            this.dataColumn10 = new System.Data.DataColumn();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.pAddMusic = new System.Windows.Forms.Panel();
-            this.bDoAddMusic = new System.Windows.Forms.Button();
-            this.tDvdName = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.tSource = new System.Windows.Forms.TextBox();
             this.pUploadPanel = new System.Windows.Forms.Panel();
             this.bDoUpload = new System.Windows.Forms.Button();
             this.tVolume = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tDestination = new System.Windows.Forms.TextBox();
+            this.pAddMusic = new System.Windows.Forms.Panel();
+            this.bDoAddMusic = new System.Windows.Forms.Button();
+            this.tDvdName = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tSource = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
@@ -100,11 +101,12 @@
             this.pbAlbum = new System.Windows.Forms.PictureBox();
             this.dwSongs = new System.Windows.Forms.DataGridView();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SongName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FileSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Bitrate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.VBR = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Duration = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SongId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.imagesBig = new System.Windows.Forms.ImageList(this.components);
             this.mAlbums = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miToFolder = new System.Windows.Forms.ToolStripMenuItem();
@@ -122,8 +124,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dsSongs)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tSongs)).BeginInit();
             this.panel3.SuspendLayout();
-            this.pAddMusic.SuspendLayout();
             this.pUploadPanel.SuspendLayout();
+            this.pAddMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -371,7 +373,8 @@
             this.dataColumn3,
             this.dataColumn4,
             this.dataColumn5,
-            this.dataColumn7});
+            this.dataColumn7,
+            this.dataColumn10});
             this.tSongs.TableName = "Songs";
             // 
             // dataColumn1
@@ -408,6 +411,11 @@
             this.dataColumn7.ColumnName = "VBR";
             this.dataColumn7.DataType = typeof(bool);
             // 
+            // dataColumn10
+            // 
+            this.dataColumn10.ColumnName = "Id";
+            this.dataColumn10.DataType = typeof(int);
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.pUploadPanel);
@@ -418,67 +426,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(814, 437);
             this.panel3.TabIndex = 5;
-            // 
-            // pAddMusic
-            // 
-            this.pAddMusic.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pAddMusic.Controls.Add(this.bDoAddMusic);
-            this.pAddMusic.Controls.Add(this.tDvdName);
-            this.pAddMusic.Controls.Add(this.label4);
-            this.pAddMusic.Controls.Add(this.label5);
-            this.pAddMusic.Controls.Add(this.tSource);
-            this.pAddMusic.Location = new System.Drawing.Point(99, 0);
-            this.pAddMusic.Name = "pAddMusic";
-            this.pAddMusic.Size = new System.Drawing.Size(233, 88);
-            this.pAddMusic.TabIndex = 9;
-            this.pAddMusic.Visible = false;
-            // 
-            // bDoAddMusic
-            // 
-            this.bDoAddMusic.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bDoAddMusic.Image = ((System.Drawing.Image)(resources.GetObject("bDoAddMusic.Image")));
-            this.bDoAddMusic.Location = new System.Drawing.Point(199, 54);
-            this.bDoAddMusic.Name = "bDoAddMusic";
-            this.bDoAddMusic.Size = new System.Drawing.Size(25, 25);
-            this.bDoAddMusic.TabIndex = 8;
-            this.bDoAddMusic.UseVisualStyleBackColor = true;
-            this.bDoAddMusic.Click += new System.EventHandler(this.bDoAddMusic_Click);
-            // 
-            // tDvdName
-            // 
-            this.tDvdName.Location = new System.Drawing.Point(3, 57);
-            this.tDvdName.Name = "tDvdName";
-            this.tDvdName.Size = new System.Drawing.Size(190, 20);
-            this.tDvdName.TabIndex = 7;
-            this.tDvdName.TextChanged += new System.EventHandler(this.tDvdName_TextChanged);
-            this.tDvdName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tDvdName_KeyDown);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 41);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(83, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Название DVD";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 2);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(43, 13);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "Откуда";
-            // 
-            // tSource
-            // 
-            this.tSource.Location = new System.Drawing.Point(3, 18);
-            this.tSource.Name = "tSource";
-            this.tSource.Size = new System.Drawing.Size(190, 20);
-            this.tSource.TabIndex = 4;
-            this.tSource.TextChanged += new System.EventHandler(this.tSource_TextChanged);
-            this.tSource.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tSource_KeyDown);
             // 
             // pUploadPanel
             // 
@@ -540,6 +487,67 @@
             this.tDestination.TabIndex = 0;
             this.tDestination.TextChanged += new System.EventHandler(this.tDestination_TextChanged);
             this.tDestination.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tDestination_KeyDown);
+            // 
+            // pAddMusic
+            // 
+            this.pAddMusic.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pAddMusic.Controls.Add(this.bDoAddMusic);
+            this.pAddMusic.Controls.Add(this.tDvdName);
+            this.pAddMusic.Controls.Add(this.label4);
+            this.pAddMusic.Controls.Add(this.label5);
+            this.pAddMusic.Controls.Add(this.tSource);
+            this.pAddMusic.Location = new System.Drawing.Point(99, 0);
+            this.pAddMusic.Name = "pAddMusic";
+            this.pAddMusic.Size = new System.Drawing.Size(233, 88);
+            this.pAddMusic.TabIndex = 9;
+            this.pAddMusic.Visible = false;
+            // 
+            // bDoAddMusic
+            // 
+            this.bDoAddMusic.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bDoAddMusic.Image = ((System.Drawing.Image)(resources.GetObject("bDoAddMusic.Image")));
+            this.bDoAddMusic.Location = new System.Drawing.Point(199, 54);
+            this.bDoAddMusic.Name = "bDoAddMusic";
+            this.bDoAddMusic.Size = new System.Drawing.Size(25, 25);
+            this.bDoAddMusic.TabIndex = 8;
+            this.bDoAddMusic.UseVisualStyleBackColor = true;
+            this.bDoAddMusic.Click += new System.EventHandler(this.bDoAddMusic_Click);
+            // 
+            // tDvdName
+            // 
+            this.tDvdName.Location = new System.Drawing.Point(3, 57);
+            this.tDvdName.Name = "tDvdName";
+            this.tDvdName.Size = new System.Drawing.Size(190, 20);
+            this.tDvdName.TabIndex = 7;
+            this.tDvdName.TextChanged += new System.EventHandler(this.tDvdName_TextChanged);
+            this.tDvdName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tDvdName_KeyDown);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 41);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(83, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Название DVD";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 2);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(43, 13);
+            this.label5.TabIndex = 5;
+            this.label5.Text = "Откуда";
+            // 
+            // tSource
+            // 
+            this.tSource.Location = new System.Drawing.Point(3, 18);
+            this.tSource.Name = "tSource";
+            this.tSource.Size = new System.Drawing.Size(190, 20);
+            this.tSource.TabIndex = 4;
+            this.tSource.TextChanged += new System.EventHandler(this.tSource_TextChanged);
+            this.tSource.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tSource_KeyDown);
             // 
             // splitContainer1
             // 
@@ -853,11 +861,12 @@
             this.dwSongs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dwSongs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FileName,
-            this.nameDataGridViewTextBoxColumn,
+            this.SongName,
             this.FileSize,
             this.Bitrate,
             this.VBR,
-            this.Duration});
+            this.Duration,
+            this.SongId});
             this.dwSongs.DataMember = "Songs";
             this.dwSongs.DataSource = this.dsSongs;
             this.dwSongs.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -870,6 +879,7 @@
             this.dwSongs.TabIndex = 4;
             this.dwSongs.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dwSongs_CellFormatting);
             this.dwSongs.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dwSongs_RowPrePaint);
+            this.dwSongs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dwSongs_MouseClick);
             // 
             // FileName
             // 
@@ -879,14 +889,14 @@
             this.FileName.Name = "FileName";
             this.FileName.ReadOnly = true;
             // 
-            // nameDataGridViewTextBoxColumn
+            // SongName
             // 
-            this.nameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 60;
+            this.SongName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.SongName.DataPropertyName = "Name";
+            this.SongName.HeaderText = "Name";
+            this.SongName.Name = "SongName";
+            this.SongName.ReadOnly = true;
+            this.SongName.Width = 60;
             // 
             // FileSize
             // 
@@ -927,6 +937,14 @@
             this.Duration.Name = "Duration";
             this.Duration.ReadOnly = true;
             this.Duration.Width = 50;
+            // 
+            // SongId
+            // 
+            this.SongId.DataPropertyName = "Id";
+            this.SongId.HeaderText = "Id";
+            this.SongId.Name = "SongId";
+            this.SongId.ReadOnly = true;
+            this.SongId.Visible = false;
             // 
             // imagesBig
             // 
@@ -1015,10 +1033,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dsSongs)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tSongs)).EndInit();
             this.panel3.ResumeLayout(false);
-            this.pAddMusic.ResumeLayout(false);
-            this.pAddMusic.PerformLayout();
             this.pUploadPanel.ResumeLayout(false);
             this.pUploadPanel.PerformLayout();
+            this.pAddMusic.ResumeLayout(false);
+            this.pAddMusic.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -1105,12 +1123,6 @@
         private System.Windows.Forms.ToolStripMenuItem miHidden;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Data.DataColumn dataColumn7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FileName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn FileSize;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Bitrate;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn VBR;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Duration;
         private System.Windows.Forms.ToolStripMenuItem aerostatToolStripMenuItem;
         private System.Windows.Forms.NumericUpDown aerostatUpDown;
         private System.Windows.Forms.ToolStripMenuItem discogsToolStripMenuItem;
@@ -1130,5 +1142,13 @@
         private System.Data.DataColumn dataColumn9;
         private System.Windows.Forms.CheckBox bEditStyle;
         private System.Windows.Forms.Button bCheckFiles;
+        private System.Data.DataColumn dataColumn10;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FileName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SongName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FileSize;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Bitrate;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn VBR;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Duration;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SongId;
     }
 }

@@ -8,6 +8,8 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Linq.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -977,6 +979,7 @@ namespace Mag6
                 {
                     var row = dsSongs.Tables[0].NewRow();
                     dsSongs.Tables[0].Rows.Add(row);
+                    row["Id"] = song.Id;
                     row["FileName"] = song.FileName;
                     row["Size"] = song.Size;
                     if (!string.IsNullOrEmpty(song.Name)) row["Name"] = song.Name;
@@ -1668,6 +1671,106 @@ namespace Mag6
 
             foreach (var entry in changedEntriesCopy)
                 entry.State = EntityState.Detached;
+        }
+
+        private void dwSongs_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ContextMenu m = new ContextMenu();
+                int currentMouseOverRow = dwSongs.HitTest(e.X, e.Y).RowIndex;
+
+                if (currentMouseOverRow >= 0)
+                {
+                    var row = dwSongs.Rows[currentMouseOverRow];
+                    var s1 = ((string)row.Cells["FileName"].Value).ToLower();
+                    if (s1.EndsWith(".mp3"))
+                    {
+                        var songId = (int)row.Cells["SongId"].Value;
+                        var ss = ((string)row.Cells["SongName"].Value).ToLower();
+                        if (ss.Length > 3) {
+                            var sngs = (
+                                from s in _ctx.Songs
+                                join a in _ctx.Albums on s.AlbumId equals a.Id
+                                where s.Name == ss && s.Id != songId
+                                orderby a.Path, a.Name, s.FileName
+                                select new { a, s }).ToList();
+                            var sngs2 = (
+                                from s in _ctx.Songs
+                                join a in _ctx.Albums on s.AlbumId equals a.Id
+                                where (s.Name.StartsWith(ss)) && s.Id != songId
+                                orderby a.Path, a.Name, s.FileName
+                                select new { a, s }).ToList();
+                            var sngs3 = (
+                                from s in _ctx.Songs
+                                join a in _ctx.Albums on s.AlbumId equals a.Id
+                                where (s.Name.Length > 3 && ss.StartsWith(s.Name)) && s.Id != songId
+                                orderby a.Path, a.Name, s.FileName
+                                select new { a, s }).ToList();
+
+                            foreach(var sng in sngs)
+                            {
+                                var mnuItem = new MenuItem($"{sng.a.Path.Substring(6)}\\{sng.a.Name}  {sng.s.Name}");
+                                mnuItem.Tag = sng.a.Id;
+                                mnuItem.Click += onSongMnuClick;
+                                m.MenuItems.Add(mnuItem);
+                            }
+                            sngs2 = sngs2.Where(x => sngs.All(y => y.s.Id != x.s.Id)).ToList();
+                            sngs3 = sngs3.Where(x => sngs.All(y => y.s.Id != x.s.Id) && sngs2.All(y => y.s.Id != x.s.Id)).ToList();
+                            if (sngs.Any() && (sngs2.Any() || sngs3.Any()))
+                            {
+                                m.MenuItems.Add(new MenuItem("-"));
+                            }
+                            var cnt = 0;
+                            foreach (var sng in sngs2)
+                            {
+                                var mnuItem = new MenuItem($"- {sng.a.Path.Substring(6)}\\{sng.a.Name}  {sng.s.Name}");
+                                mnuItem.Tag = sng.a.Id;
+                                mnuItem.Click += onSongMnuClick;
+                                m.MenuItems.Add(mnuItem);
+
+                                cnt++;
+                                if ((sngs2.Count + sngs3.Count) > 30 && cnt == 20)
+                                {
+                                    m.MenuItems.Add(new MenuItem($"... и еще {sngs2.Count + sngs3.Count - cnt}"));
+                                    break;
+                                }
+                            }
+                            if ((sngs2.Count + sngs3.Count) <= 30 || cnt == 20)
+                            {
+                                foreach (var sng in sngs3)
+                                {
+                                    var mnuItem = new MenuItem($"+ {sng.a.Path.Substring(6)}\\{sng.a.Name}  {sng.s.Name}");
+                                    mnuItem.Tag = sng.a.Id;
+                                    mnuItem.Click += onSongMnuClick;
+                                    m.MenuItems.Add(mnuItem);
+
+                                    cnt++;
+                                    if ((sngs2.Count + sngs3.Count) > 30 && cnt == 20)
+                                    {
+                                        m.MenuItems.Add(new MenuItem($"... и еще {sngs2.Count + sngs3.Count - cnt}"));
+                                        break;
+                                    }
+                                }
+                            }
+                            if (sngs.Any() && (sngs2.Any() || sngs3.Any()))
+                            {
+                                m.Show(dwSongs, new Point(e.X, e.Y));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void onSongMnuClick(object sender, EventArgs e) 
+        {
+            var mnu = (MenuItem)sender;
+            var alb = _ctx.Albums.FirstOrDefault(x => x.Id == (int)mnu.Tag);
+            if (alb != null)
+            {
+                DisplayNode(new AlbumDto(alb), null);
+            }
         }
     }
 }
