@@ -1710,9 +1710,10 @@ namespace Mag6
 
                             foreach(var sng in sngs)
                             {
-                                var mnuItem = new MenuItem($"{sng.a.Path.Substring(6)}\\{sng.a.Name}  {sng.s.Name}");
+                                var mnuItem = new MenuItem($"{sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
                                 mnuItem.Tag = sng.a.Id;
                                 mnuItem.Click += onSongMnuClick;
+                                mnuItem.DrawItem += onSongMnuClick;
                                 m.MenuItems.Add(mnuItem);
                             }
                             sngs2 = sngs2.Where(x => sngs.All(y => y.s.Id != x.s.Id)).ToList();
@@ -1724,7 +1725,7 @@ namespace Mag6
                             var cnt = 0;
                             foreach (var sng in sngs2)
                             {
-                                var mnuItem = new MenuItem($"- {sng.a.Path.Substring(6)}\\{sng.a.Name}  {sng.s.Name}");
+                                var mnuItem = new MenuItem($"> {sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
                                 mnuItem.Tag = sng.a.Id;
                                 mnuItem.Click += onSongMnuClick;
                                 m.MenuItems.Add(mnuItem);
@@ -1736,11 +1737,15 @@ namespace Mag6
                                     break;
                                 }
                             }
+                            if (sngs2.Any() && sngs3.Any())
+                            {
+                                m.MenuItems.Add(new MenuItem("-"));
+                            }
                             if ((sngs2.Count + sngs3.Count) <= 30 || cnt == 20)
                             {
                                 foreach (var sng in sngs3)
                                 {
-                                    var mnuItem = new MenuItem($"+ {sng.a.Path.Substring(6)}\\{sng.a.Name}  {sng.s.Name}");
+                                    var mnuItem = new MenuItem($"< {sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
                                     mnuItem.Tag = sng.a.Id;
                                     mnuItem.Click += onSongMnuClick;
                                     m.MenuItems.Add(mnuItem);
@@ -1753,8 +1758,12 @@ namespace Mag6
                                     }
                                 }
                             }
-                            if (sngs.Any() && (sngs2.Any() || sngs3.Any()))
+                            if (sngs.Any() || sngs2.Any() || sngs3.Any())
                             {
+                                m.Show(dwSongs, new Point(e.X, e.Y));
+                            } else
+                            {
+                                m.MenuItems.Add(new MenuItem("(не найдено)"));
                                 m.Show(dwSongs, new Point(e.X, e.Y));
                             }
                         }
@@ -1772,5 +1781,6 @@ namespace Mag6
                 DisplayNode(new AlbumDto(alb), null);
             }
         }
+
     }
 }
