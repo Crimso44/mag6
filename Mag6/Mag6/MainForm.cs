@@ -9,10 +9,13 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
+using System.Data.Linq;
 using System.Data.Linq.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -36,6 +39,7 @@ namespace Mag6
         private string _searchedSong = null;
         private Mutex _mutexObj = new Mutex();
         private int _loadersCount = 0;
+        private int? _markedSongId = null;
         private List<string> _imagesLoaded = new List<string>();
         private List<string> _imagesToLoad = new List<string>();
         private List<KeyImageDto> _imagesAlmostLoaded = new List<KeyImageDto>();
@@ -797,7 +801,18 @@ namespace Mag6
 
             if (!string.IsNullOrEmpty(_searchedSong) && ((string)row.Cells["FileName"].Value).ToLower().Contains(_searchedSong))
             {
-                row.DefaultCellStyle.BackColor = Color.LightSkyBlue;
+                if (row.Cells["Cnt"].Value != null && row.Cells["Cnt"].Value != DBNull.Value)
+                {
+                    row.DefaultCellStyle.BackColor = Color.LightSeaGreen;
+                }
+                else
+                {
+                    row.DefaultCellStyle.BackColor = Color.LightSkyBlue;
+                }
+            }
+            else if (row.Cells["Cnt"].Value != null && row.Cells["Cnt"].Value != DBNull.Value)
+            {
+                row.DefaultCellStyle.BackColor = Color.LightGreen;
             }
         }
 
@@ -974,7 +989,7 @@ namespace Mag6
             pbAlbum.Hide();
             if (data != null)
             {
-                var songs = _ctx.Songs.Where(x => x.AlbumId == data.Id).OrderBy(x => x.FileName).ToList();
+                var songs = _ctx.vwSongs.Where(x => x.AlbumId == data.Id).OrderBy(x => x.FileName).ToList();
                 foreach (var song in songs)
                 {
                     var row = dsSongs.Tables[0].NewRow();
@@ -982,10 +997,14 @@ namespace Mag6
                     row["Id"] = song.Id;
                     row["FileName"] = song.FileName;
                     row["Size"] = song.Size;
+                    if (song.SameSongId.HasValue) row["SameSongId"] = song.SameSongId;
+                    if (song.Cnt.HasValue) row["Cnt"] = song.Cnt;
                     if (!string.IsNullOrEmpty(song.Name)) row["Name"] = song.Name;
                     if (song.Bitrate.HasValue) row["Bitrate"] = song.Bitrate;
                     if (song.Duration.HasValue) row["Duration"] = song.Duration;
                     if (song.IsVbr.HasValue) row["VBR"] = song.IsVbr;
+
+                    _ctx.Entry(song).State = EntityState.Detached;
                 }
                 dwSongs.DataSource = null;
                 dwSongs.DataSource = dsSongs;
@@ -1682,11 +1701,62 @@ namespace Mag6
 
                 if (currentMouseOverRow >= 0)
                 {
+                    int? sameSongId = null;
+
                     var row = dwSongs.Rows[currentMouseOverRow];
                     var s1 = ((string)row.Cells["FileName"].Value).ToLower();
                     if (s1.EndsWith(".mp3"))
                     {
                         var songId = (int)row.Cells["SongId"].Value;
+                        if (row.Cells["SameSongId"].Value != null && row.Cells["SameSongId"].Value != DBNull.Value)
+                        {
+                            sameSongId = (int)row.Cells["SameSongId"].Value;
+                        }
+
+                        var mnuSsItem = new MenuItem("Mark");
+                        mnuSsItem.Tag = songId;
+                        mnuSsItem.Click += onMarkSongMnuClick;
+                        m.MenuItems.Add(mnuSsItem);
+
+                        if (_markedSongId.HasValue && songId != _markedSongId) 
+                        {
+                            mnuSsItem = new MenuItem("Set same");
+                            mnuSsItem.Tag = songId;
+                            mnuSsItem.Click += onSetSameSongMnuClick;
+                            m.MenuItems.Add(mnuSsItem);
+                        }
+
+                        if (sameSongId.HasValue)
+                        {
+                            mnuSsItem = new MenuItem("Unset same");
+                            mnuSsItem.Tag = songId;
+                            mnuSsItem.Click += onUnsetSameSongMnuClick;
+                            m.MenuItems.Add(mnuSsItem);
+                        }
+
+                        m.MenuItems.Add(new MenuItem("-"));
+
+                        var usedSongs = new List<int>();
+                        if (sameSongId.HasValue)
+                        {
+                            var sSongs = (
+                                from s in _ctx.Songs
+                                join a in _ctx.Albums on s.AlbumId equals a.Id
+                                where s.SameSongId == sameSongId && s.Id != songId
+                                orderby a.Path, a.Name, s.FileName
+                                select new { a, s }).ToList();
+
+                            foreach (var sng in sSongs)
+                            {
+                                var mnuItem = new MenuItem($"! {sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
+                                mnuItem.Tag = sng.a.Id;
+                                mnuItem.Click += onSongMnuClick;
+                                m.MenuItems.Add(mnuItem);
+
+                                usedSongs.Add(sng.s.Id);
+                            }
+                        }
+
                         var ss = ((string)row.Cells["SongName"].Value).ToLower();
                         if (ss.Length > 3) {
                             var sngs = (
@@ -1708,16 +1778,20 @@ namespace Mag6
                                 orderby a.Path, a.Name, s.FileName
                                 select new { a, s }).ToList();
 
-                            foreach(var sng in sngs)
+                            sngs = sngs.Where(x => usedSongs.All(y => y != x.s.Id)).ToList();
+                            if (usedSongs.Any() && (sngs.Any() || sngs2.Any() || sngs3.Any()))
+                            {
+                                m.MenuItems.Add(new MenuItem("-"));
+                            }
+                            foreach (var sng in sngs)
                             {
                                 var mnuItem = new MenuItem($"{sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
                                 mnuItem.Tag = sng.a.Id;
                                 mnuItem.Click += onSongMnuClick;
-                                mnuItem.DrawItem += onSongMnuClick;
                                 m.MenuItems.Add(mnuItem);
                             }
-                            sngs2 = sngs2.Where(x => sngs.All(y => y.s.Id != x.s.Id)).ToList();
-                            sngs3 = sngs3.Where(x => sngs.All(y => y.s.Id != x.s.Id) && sngs2.All(y => y.s.Id != x.s.Id)).ToList();
+                            sngs2 = sngs2.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id)).ToList();
+                            sngs3 = sngs3.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id) && sngs2.All(y => y.s.Id != x.s.Id)).ToList();
                             if (sngs.Any() && (sngs2.Any() || sngs3.Any()))
                             {
                                 m.MenuItems.Add(new MenuItem("-"));
@@ -1758,7 +1832,7 @@ namespace Mag6
                                     }
                                 }
                             }
-                            if (sngs.Any() || sngs2.Any() || sngs3.Any())
+                            if (usedSongs.Any() || sngs.Any() || sngs2.Any() || sngs3.Any())
                             {
                                 m.Show(dwSongs, new Point(e.X, e.Y));
                             } else
@@ -1782,5 +1856,59 @@ namespace Mag6
             }
         }
 
+        private void onMarkSongMnuClick(object sender, EventArgs e)
+        {
+            var mnu = (MenuItem)sender;
+            var sng = _ctx.Songs.FirstOrDefault(x => x.Id == (int)mnu.Tag);
+            if (sng != null)
+            {
+                var alb = _ctx.Albums.FirstOrDefault(x => x.Id == sng.AlbumId);
+                if (alb != null)
+                {
+                    _markedSongId = sng.Id;
+                    lMarkedSong.Text = $"{alb.Path.Substring(6)}\\{alb.Name} | {sng.Name}";
+                }
+            }
+        }
+
+        private void onSetSameSongMnuClick(object sender, EventArgs e)
+        {
+            var mnu = (MenuItem)sender;
+            var sng = _ctx.Songs.FirstOrDefault(x => x.Id == (int)mnu.Tag);
+            var sngMark = _ctx.Songs.FirstOrDefault(x => x.Id == _markedSongId);
+            if (sng != null && sngMark != null)
+            {
+                if (sngMark.SameSongId.HasValue)
+                {
+                    sng.SameSongId = sngMark.SameSongId;
+                }
+                else if (sng.SameSongId.HasValue)
+                {
+                    sngMark.SameSongId = sng.SameSongId;
+                }
+                else
+                {
+                    var same = new SameSong();
+                    _ctx.SameSongs.Add(same);
+                    _ctx.SaveChanges();
+                    sng.SameSongId = same.SameSongId;
+                    sngMark.SameSongId = same.SameSongId;
+                }
+                _ctx.SaveChanges();
+                tlwAlbums_SelectionChanged(null, null);
+            }
+        }
+
+        private void onUnsetSameSongMnuClick(object sender, EventArgs e)
+        {
+            var mnu = (MenuItem)sender;
+            var sng = _ctx.Songs.FirstOrDefault(x => x.Id == (int)mnu.Tag);
+            if (sng != null)
+            {
+                sng.SameSongId = null;
+                _ctx.SaveChanges();
+                tlwAlbums_SelectionChanged(null, null);
+            }
+        }
     }
 }

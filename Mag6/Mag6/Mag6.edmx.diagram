@@ -11,6 +11,9 @@
         <AssociationConnector Association="Mag6Model.FK_DVD_Album" />
         <EntityTypeShape EntityType="Mag6Model.Song" Width="1.5" PointX="3" PointY="4.375" />
         <AssociationConnector Association="Mag6Model.FK_Song_Album" />
+        <EntityTypeShape EntityType="Mag6Model.SameSong" Width="1.5" PointX="0.75" PointY="7.25" />
+        <AssociationConnector Association="Mag6Model.FK_Song_SameSong" />
+        <EntityTypeShape EntityType="Mag6Model.vwSong" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

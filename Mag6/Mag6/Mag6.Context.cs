@@ -28,5 +28,7 @@ namespace Mag6
         public virtual DbSet<DVD> DVDs { get; set; }
         public virtual DbSet<Album> Albums { get; set; }
         public virtual DbSet<Song> Songs { get; set; }
+        public virtual DbSet<SameSong> SameSongs { get; set; }
+        public virtual DbSet<vwSong> vwSongs { get; set; }
     }
 }

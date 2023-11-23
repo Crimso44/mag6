@@ -29,6 +29,13 @@
           <Property Name="AlbumId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <EntityType Name="SameSong">
+          <Key>
+            <PropertyRef Name="SameSongId" />
+          </Key>
+          <Property Name="SameSongId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Cnt" Type="int" />
+        </EntityType>
         <EntityType Name="Song">
           <Key>
             <PropertyRef Name="Id" />
@@ -42,6 +49,29 @@
           <Property Name="Duration" Type="int" />
           <Property Name="Created" Type="datetime" Nullable="false" />
           <Property Name="IsVbr" Type="bit" />
+          <Property Name="SameSongId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Mag6.dbo.vwSong' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwSong">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="AlbumId" />
+            <PropertyRef Name="FileName" />
+            <PropertyRef Name="Size" />
+            <PropertyRef Name="Created" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="AlbumId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Size" Type="bigint" Nullable="false" />
+          <Property Name="Bitrate" Type="int" />
+          <Property Name="Duration" Type="int" />
+          <Property Name="Created" Type="datetime" Nullable="false" />
+          <Property Name="IsVbr" Type="bit" />
+          <Property Name="SameSongId" Type="int" />
+          <Property Name="Cnt" Type="int" />
         </EntityType>
         <Association Name="FK_Album_Album">
           <End Role="Album" Type="Self.Album" Multiplicity="0..1" />
@@ -79,10 +109,38 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Song_SameSong">
+          <End Role="SameSong" Type="Self.SameSong" Multiplicity="0..1" />
+          <End Role="Song" Type="Self.Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SameSong">
+              <PropertyRef Name="SameSongId" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="SameSongId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="Mag6ModelStoreContainer">
           <EntitySet Name="Album" EntityType="Self.Album" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DVD" EntityType="Self.DVD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SameSong" EntityType="Self.SameSong" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Song" EntityType="Self.Song" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vwSong" EntityType="Self.vwSong" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwSong].[Id] AS [Id], 
+    [vwSong].[AlbumId] AS [AlbumId], 
+    [vwSong].[Name] AS [Name], 
+    [vwSong].[FileName] AS [FileName], 
+    [vwSong].[Size] AS [Size], 
+    [vwSong].[Bitrate] AS [Bitrate], 
+    [vwSong].[Duration] AS [Duration], 
+    [vwSong].[Created] AS [Created], 
+    [vwSong].[IsVbr] AS [IsVbr], 
+    [vwSong].[SameSongId] AS [SameSongId], 
+    [vwSong].[Cnt] AS [Cnt]
+    FROM [dbo].[vwSong] AS [vwSong]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Album_Album" Association="Self.FK_Album_Album">
             <End Role="Album" EntitySet="Album" />
             <End Role="Album1" EntitySet="Album" />
@@ -93,6 +151,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Song_Album" Association="Self.FK_Song_Album">
             <End Role="Album" EntitySet="Album" />
+            <End Role="Song" EntitySet="Song" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Song_SameSong" Association="Self.FK_Song_SameSong">
+            <End Role="SameSong" EntitySet="SameSong" />
             <End Role="Song" EntitySet="Song" />
           </AssociationSet>
         </EntityContainer>
@@ -125,6 +187,12 @@
             <End Role="Album" EntitySet="Albums" />
             <End Role="Song" EntitySet="Songs" />
           </AssociationSet>
+          <EntitySet Name="SameSongs" EntityType="Mag6Model.SameSong" />
+          <AssociationSet Name="FK_Song_SameSong" Association="Mag6Model.FK_Song_SameSong">
+            <End Role="SameSong" EntitySet="SameSongs" />
+            <End Role="Song" EntitySet="Songs" />
+          </AssociationSet>
+          <EntitySet Name="vwSongs" EntityType="Mag6Model.vwSong" />
           </EntityContainer>
         <EntityType Name="Album">
           <Key>
@@ -184,6 +252,8 @@
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="IsVbr" Type="Boolean" />
           <NavigationProperty Name="Album" Relationship="Mag6Model.FK_Song_Album" FromRole="Song" ToRole="Album" />
+          <Property Name="SameSongId" Type="Int32" />
+          <NavigationProperty Name="SameSong" Relationship="Mag6Model.FK_Song_SameSong" FromRole="Song" ToRole="SameSong" />
         </EntityType>
         <Association Name="FK_Song_Album">
           <End Type="Mag6Model.Album" Role="Album" Multiplicity="1" />
@@ -197,6 +267,46 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SameSong">
+          <Key>
+            <PropertyRef Name="SameSongId" />
+          </Key>
+          <Property Name="SameSongId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Cnt" Type="Int32" />
+          <NavigationProperty Name="Songs" Relationship="Mag6Model.FK_Song_SameSong" FromRole="SameSong" ToRole="Song" />
+        </EntityType>
+        <Association Name="FK_Song_SameSong">
+          <End Type="Mag6Model.SameSong" Role="SameSong" Multiplicity="0..1" />
+          <End Type="Mag6Model.Song" Role="Song" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SameSong">
+              <PropertyRef Name="SameSongId" />
+            </Principal>
+            <Dependent Role="Song">
+              <PropertyRef Name="SameSongId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="vwSong">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="AlbumId" />
+            <PropertyRef Name="FileName" />
+            <PropertyRef Name="Size" />
+            <PropertyRef Name="Created" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="AlbumId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Size" Type="Int64" Nullable="false" />
+          <Property Name="Bitrate" Type="Int32" />
+          <Property Name="Duration" Type="Int32" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IsVbr" Type="Boolean" />
+          <Property Name="SameSongId" Type="Int32" />
+          <Property Name="Cnt" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -232,6 +342,32 @@
           <EntitySetMapping Name="Songs">
             <EntityTypeMapping TypeName="Mag6Model.Song">
               <MappingFragment StoreEntitySet="Song">
+                <ScalarProperty Name="SameSongId" ColumnName="SameSongId" />
+                <ScalarProperty Name="IsVbr" ColumnName="IsVbr" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="Bitrate" ColumnName="Bitrate" />
+                <ScalarProperty Name="Size" ColumnName="Size" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AlbumId" ColumnName="AlbumId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SameSongs">
+            <EntityTypeMapping TypeName="Mag6Model.SameSong">
+              <MappingFragment StoreEntitySet="SameSong">
+                <ScalarProperty Name="Cnt" ColumnName="Cnt" />
+                <ScalarProperty Name="SameSongId" ColumnName="SameSongId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwSongs">
+            <EntityTypeMapping TypeName="Mag6Model.vwSong">
+              <MappingFragment StoreEntitySet="vwSong">
+                <ScalarProperty Name="Cnt" ColumnName="Cnt" />
+                <ScalarProperty Name="SameSongId" ColumnName="SameSongId" />
                 <ScalarProperty Name="IsVbr" ColumnName="IsVbr" />
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="Duration" ColumnName="Duration" />

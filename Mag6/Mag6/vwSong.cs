@@ -12,7 +12,7 @@ namespace Mag6
     using System;
     using System.Collections.Generic;
     
-    public partial class Song
+    public partial class vwSong
     {
         public int Id { get; set; }
         public int AlbumId { get; set; }
@@ -24,8 +24,6 @@ namespace Mag6
         public System.DateTime Created { get; set; }
         public Nullable<bool> IsVbr { get; set; }
         public Nullable<int> SameSongId { get; set; }
-    
-        public virtual Album Album { get; set; }
-        public virtual SameSong SameSong { get; set; }
+        public Nullable<int> Cnt { get; set; }
     }
 }
