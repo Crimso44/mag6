@@ -1779,10 +1779,14 @@ namespace Mag6
                                 select new { a, s }).ToList();
 
                             sngs = sngs.Where(x => usedSongs.All(y => y != x.s.Id)).ToList();
+                            sngs2 = sngs2.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id)).ToList();
+                            sngs3 = sngs3.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id) && sngs2.All(y => y.s.Id != x.s.Id)).ToList();
+
                             if (usedSongs.Any() && (sngs.Any() || sngs2.Any() || sngs3.Any()))
                             {
                                 m.MenuItems.Add(new MenuItem("-"));
                             }
+
                             foreach (var sng in sngs)
                             {
                                 var mnuItem = new MenuItem($"{sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
@@ -1790,12 +1794,12 @@ namespace Mag6
                                 mnuItem.Click += onSongMnuClick;
                                 m.MenuItems.Add(mnuItem);
                             }
-                            sngs2 = sngs2.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id)).ToList();
-                            sngs3 = sngs3.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id) && sngs2.All(y => y.s.Id != x.s.Id)).ToList();
+
                             if (sngs.Any() && (sngs2.Any() || sngs3.Any()))
                             {
                                 m.MenuItems.Add(new MenuItem("-"));
                             }
+
                             var cnt = 0;
                             foreach (var sng in sngs2)
                             {
