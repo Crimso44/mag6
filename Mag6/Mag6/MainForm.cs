@@ -1758,7 +1758,7 @@ namespace Mag6
                         }
 
                         var ss = ((string)row.Cells["SongName"].Value).ToLower();
-                        if (ss.Length > 3) {
+                        if (ss.Length > 2) {
                             var sngs = (
                                 from s in _ctx.Songs
                                 join a in _ctx.Albums on s.AlbumId equals a.Id
