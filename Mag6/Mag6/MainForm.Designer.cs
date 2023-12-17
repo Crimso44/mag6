@@ -65,6 +65,7 @@
             this.dataColumn7 = new System.Data.DataColumn();
             this.dataColumn10 = new System.Data.DataColumn();
             this.dataColumn11 = new System.Data.DataColumn();
+            this.dataColumn12 = new System.Data.DataColumn();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pUploadPanel = new System.Windows.Forms.Panel();
             this.bDoUpload = new System.Windows.Forms.Button();
@@ -102,16 +103,6 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.pbAlbum = new System.Windows.Forms.PictureBox();
             this.dwSongs = new System.Windows.Forms.DataGridView();
-            this.imagesBig = new System.Windows.Forms.ImageList(this.components);
-            this.mAlbums = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.miToFolder = new System.Windows.Forms.ToolStripMenuItem();
-            this.miHidden = new System.Windows.Forms.ToolStripMenuItem();
-            this.aerostatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.discogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.genreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.styleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.dataColumn12 = new System.Data.DataColumn();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SongName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FileSize = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -121,6 +112,15 @@
             this.SongId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SameSongId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cnt = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.imagesBig = new System.Windows.Forms.ImageList(this.components);
+            this.mAlbums = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.miToFolder = new System.Windows.Forms.ToolStripMenuItem();
+            this.miHidden = new System.Windows.Forms.ToolStripMenuItem();
+            this.aerostatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.discogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.genreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.styleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.aerostatUpDown)).BeginInit();
@@ -437,6 +437,11 @@
             // 
             this.dataColumn11.ColumnName = "SameSongId";
             this.dataColumn11.DataType = typeof(int);
+            // 
+            // dataColumn12
+            // 
+            this.dataColumn12.ColumnName = "Cnt";
+            this.dataColumn12.DataType = typeof(int);
             // 
             // panel3
             // 
@@ -905,74 +910,6 @@
             this.dwSongs.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dwSongs_RowPrePaint);
             this.dwSongs.MouseClick += new System.Windows.Forms.MouseEventHandler(this.dwSongs_MouseClick);
             // 
-            // imagesBig
-            // 
-            this.imagesBig.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-            this.imagesBig.ImageSize = new System.Drawing.Size(200, 200);
-            this.imagesBig.TransparentColor = System.Drawing.Color.Transparent;
-            // 
-            // mAlbums
-            // 
-            this.mAlbums.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miToFolder,
-            this.miHidden,
-            this.aerostatToolStripMenuItem,
-            this.discogsToolStripMenuItem,
-            this.genreToolStripMenuItem,
-            this.styleToolStripMenuItem});
-            this.mAlbums.Name = "mAlbums";
-            this.mAlbums.Size = new System.Drawing.Size(157, 136);
-            // 
-            // miToFolder
-            // 
-            this.miToFolder.Name = "miToFolder";
-            this.miToFolder.Size = new System.Drawing.Size(156, 22);
-            this.miToFolder.Text = "Открыть папку";
-            this.miToFolder.Click += new System.EventHandler(this.miToFolder_Click);
-            // 
-            // miHidden
-            // 
-            this.miHidden.Name = "miHidden";
-            this.miHidden.Size = new System.Drawing.Size(156, 22);
-            this.miHidden.Text = "Скрыть";
-            this.miHidden.Click += new System.EventHandler(this.miHidden_Click);
-            // 
-            // aerostatToolStripMenuItem
-            // 
-            this.aerostatToolStripMenuItem.Name = "aerostatToolStripMenuItem";
-            this.aerostatToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.aerostatToolStripMenuItem.Text = "Аэростат";
-            this.aerostatToolStripMenuItem.Visible = false;
-            this.aerostatToolStripMenuItem.Click += new System.EventHandler(this.aerostatToolStripMenuItem_Click);
-            // 
-            // discogsToolStripMenuItem
-            // 
-            this.discogsToolStripMenuItem.Name = "discogsToolStripMenuItem";
-            this.discogsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.discogsToolStripMenuItem.Text = "Discogs";
-            this.discogsToolStripMenuItem.Click += new System.EventHandler(this.discogsToolStripMenuItem_Click);
-            // 
-            // genreToolStripMenuItem
-            // 
-            this.genreToolStripMenuItem.Name = "genreToolStripMenuItem";
-            this.genreToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.genreToolStripMenuItem.Text = "Жанр";
-            this.genreToolStripMenuItem.Visible = false;
-            this.genreToolStripMenuItem.Click += new System.EventHandler(this.genreToolStripMenuItem_Click);
-            // 
-            // styleToolStripMenuItem
-            // 
-            this.styleToolStripMenuItem.Name = "styleToolStripMenuItem";
-            this.styleToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.styleToolStripMenuItem.Text = "Стиль";
-            this.styleToolStripMenuItem.Visible = false;
-            this.styleToolStripMenuItem.Click += new System.EventHandler(this.styleToolStripMenuItem_Click);
-            // 
-            // dataColumn12
-            // 
-            this.dataColumn12.ColumnName = "Cnt";
-            this.dataColumn12.DataType = typeof(int);
-            // 
             // FileName
             // 
             this.FileName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -1053,6 +990,69 @@
             this.Cnt.Name = "Cnt";
             this.Cnt.ReadOnly = true;
             this.Cnt.Width = 30;
+            // 
+            // imagesBig
+            // 
+            this.imagesBig.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
+            this.imagesBig.ImageSize = new System.Drawing.Size(200, 200);
+            this.imagesBig.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // mAlbums
+            // 
+            this.mAlbums.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miToFolder,
+            this.miHidden,
+            this.aerostatToolStripMenuItem,
+            this.discogsToolStripMenuItem,
+            this.genreToolStripMenuItem,
+            this.styleToolStripMenuItem});
+            this.mAlbums.Name = "mAlbums";
+            this.mAlbums.Size = new System.Drawing.Size(157, 136);
+            // 
+            // miToFolder
+            // 
+            this.miToFolder.Name = "miToFolder";
+            this.miToFolder.Size = new System.Drawing.Size(156, 22);
+            this.miToFolder.Text = "Открыть папку";
+            this.miToFolder.Click += new System.EventHandler(this.miToFolder_Click);
+            // 
+            // miHidden
+            // 
+            this.miHidden.Name = "miHidden";
+            this.miHidden.Size = new System.Drawing.Size(156, 22);
+            this.miHidden.Text = "Скрыть";
+            this.miHidden.Click += new System.EventHandler(this.miHidden_Click);
+            // 
+            // aerostatToolStripMenuItem
+            // 
+            this.aerostatToolStripMenuItem.Name = "aerostatToolStripMenuItem";
+            this.aerostatToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.aerostatToolStripMenuItem.Text = "Аэростат";
+            this.aerostatToolStripMenuItem.Visible = false;
+            this.aerostatToolStripMenuItem.Click += new System.EventHandler(this.aerostatToolStripMenuItem_Click);
+            // 
+            // discogsToolStripMenuItem
+            // 
+            this.discogsToolStripMenuItem.Name = "discogsToolStripMenuItem";
+            this.discogsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.discogsToolStripMenuItem.Text = "Discogs";
+            this.discogsToolStripMenuItem.Click += new System.EventHandler(this.discogsToolStripMenuItem_Click);
+            // 
+            // genreToolStripMenuItem
+            // 
+            this.genreToolStripMenuItem.Name = "genreToolStripMenuItem";
+            this.genreToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.genreToolStripMenuItem.Text = "Жанр";
+            this.genreToolStripMenuItem.Visible = false;
+            this.genreToolStripMenuItem.Click += new System.EventHandler(this.genreToolStripMenuItem_Click);
+            // 
+            // styleToolStripMenuItem
+            // 
+            this.styleToolStripMenuItem.Name = "styleToolStripMenuItem";
+            this.styleToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.styleToolStripMenuItem.Text = "Стиль";
+            this.styleToolStripMenuItem.Visible = false;
+            this.styleToolStripMenuItem.Click += new System.EventHandler(this.styleToolStripMenuItem_Click);
             // 
             // MainForm
             // 

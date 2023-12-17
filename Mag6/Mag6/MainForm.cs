@@ -4,22 +4,14 @@ using Mag6.Dto;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Linq;
-using System.Data.Linq.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Mag6
@@ -82,7 +74,7 @@ namespace Mag6
             };
 
             tlwAlbums.CellToolTipShowing += new EventHandler<ToolTipShowingEventArgs>(tlwAlbums_CellToolTipShowing);
-            
+
             olvName.ImageGetter = delegate (object row) {
                 var data = (AlbumDto)row;
                 var key = data.Id.ToString();
@@ -307,7 +299,7 @@ namespace Mag6
                         var magFile = File.ReadAllLines(file.FullName);
                         var magdata = new List<string>(magFile);
 
-                        foreach(var line in magdata)
+                        foreach (var line in magdata)
                         {
                             if (line == "hidden")
                                 parentAlbum.IsHidden = true;
@@ -417,14 +409,14 @@ namespace Mag6
                         (string.IsNullOrEmpty(path) ? "" : path + "\\") + folder.Name, dir);
                     res.Size = (res.Size ?? 0) + (dat.Size ?? 0);
                     res.Duration = (res.Duration ?? 0) + (dat.Duration ?? 0);
-                    foreach(var key in dat.Bitrates.Keys)
+                    foreach (var key in dat.Bitrates.Keys)
                     {
                         if (res.Bitrates.ContainsKey(key))
                             res.Bitrates[key] += dat.Bitrates[key];
                         else
                             res.Bitrates[key] = dat.Bitrates[key];
                     }
-                    foreach(var dvd in dat.Dvds)
+                    foreach (var dvd in dat.Dvds)
                     {
                         if (!innerDvds.Contains(dvd))
                             innerDvds.Add(dvd);
@@ -520,8 +512,8 @@ namespace Mag6
             {
                 start = _ctx.Albums.Where(x => x.Id == selected.Id).FirstOrDefault();
             }
-            var txt = "Refresh music" + 
-                (start == null || start.Path == "" ? "" : 
+            var txt = "Refresh music" +
+                (start == null || start.Path == "" ? "" :
                     " from " + (start.Path + "\\" + start.Name).Substring(6)) + "?";
             var confirmResult = MessageBox.Show(txt, "Confirm", MessageBoxButtons.YesNo);
             if (confirmResult == DialogResult.Yes)
@@ -556,7 +548,7 @@ namespace Mag6
                     d = new DirectoryInfo(dir);
                 }
 
-                var dat = LoadDirectory(d, 
+                var dat = LoadDirectory(d,
                     (string.IsNullOrEmpty(start.Path) ? "" : start.Path + "\\") + start.Name, start);
 
                 if (selected != null)
@@ -609,7 +601,7 @@ namespace Mag6
                     } else if (chAlb.Bitrate.Contains("-"))
                     {
                         var bitLst = chAlb.Bitrate.Split('-');
-                        foreach(var bitStr in bitLst)
+                        foreach (var bitStr in bitLst)
                         {
                             var bit = int.Parse(bitStr);
                             res.AddBitrate(bit);
@@ -699,7 +691,7 @@ namespace Mag6
             dsDvds.Tables[0].Clear();
             dsGenres.Tables[0].Clear();
             dsStyles.Tables[0].Clear();
-            
+
             var row = dsDvds.Tables[0].NewRow();
             row["Name"] = "Все";
             dsDvds.Tables[0].Rows.Add(row);
@@ -711,7 +703,7 @@ namespace Mag6
             dsStyles.Tables[0].Rows.Add(row);
 
             var dvds = _ctx.DVDs.Select(x => x.Name).GroupBy(g => g).OrderBy(x => x.Key).ToList();
-            foreach(var dvd in dvds)
+            foreach (var dvd in dvds)
             {
                 if (dvd.Key.StartsWith("G:"))
                 {
@@ -819,7 +811,7 @@ namespace Mag6
         private void dwDvds_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             var newFlt = "";
-            if (e.RowIndex > 0) 
+            if (e.RowIndex > 0)
                 newFlt = (string)dwDvds.Rows[e.RowIndex].Cells[0].Value;
 
             if (_filter != newFlt)
@@ -871,7 +863,7 @@ namespace Mag6
             }
         }
 
-            private void tVolume_KeyDown(object sender, KeyEventArgs e)
+        private void tVolume_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -897,7 +889,7 @@ namespace Mag6
                 long size = 0;
                 var albs = _ctx.Albums.Where(x => !(x.IsHidden ?? false) && !(x.IsUploaded ?? false))
                     .Select(x => new { x.Id, x.Name, x.Path }).ToList()
-                    .OrderBy(x => new string(x.Name.Reverse().ToArray())).ThenBy(x => new string (x.Path.Reverse().ToArray()))
+                    .OrderBy(x => new string(x.Name.Reverse().ToArray())).ThenBy(x => new string(x.Path.Reverse().ToArray()))
                     .Select(x => x.Id).ToList();
                 while (size < fullSize)
                 {
@@ -920,7 +912,7 @@ namespace Mag6
                     {
                         var dirList = new List<string>(); // uplAlbum.Path.Split('\\').ToList();
                         var alb = uplAlbum;
-                        while(alb.ParentId.HasValue)
+                        while (alb.ParentId.HasValue)
                         {
                             alb = _ctx.Albums.Single(x => x.Id == alb.ParentId);
                             if (!(alb.IsHidden ?? false))
@@ -975,7 +967,7 @@ namespace Mag6
         private void tlwAlbums_Expanded(object sender, BrightIdeasSoftware.TreeBranchExpandedEventArgs e)
         {
             var alb = e.Model as AlbumDto;
-            foreach(var chId in alb.ChildIds)
+            foreach (var chId in alb.ChildIds)
             {
                 var chAlb = _treeList.Where(x => x.Id == chId).First();
                 LoadChildrenTree(chAlb);
@@ -1126,10 +1118,10 @@ namespace Mag6
             return s + (s.EndsWith("\\") ? "" : "\\");
         }
 
-        private void AddFolder (DirectoryInfo dirFrom, DirectoryInfo dirTo)
+        private void AddFolder(DirectoryInfo dirFrom, DirectoryInfo dirTo)
         {
             var files = dirFrom.GetFiles();
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 var toFileName = GetDirName(dirTo.FullName) + file.Name;
                 if (!File.Exists(toFileName))
@@ -1151,7 +1143,7 @@ namespace Mag6
             }
 
             var dirs = dirFrom.GetDirectories();
-            foreach(var dir in dirs)
+            foreach (var dir in dirs)
             {
                 var innerDirTo = new DirectoryInfo(GetDirName(dirTo.FullName) + dir.Name);
                 Directory.CreateDirectory(innerDirTo.FullName);
@@ -1206,7 +1198,7 @@ namespace Mag6
                 n = new AlbumDto(alb);
             }
             AlbumDto obj = null;
-            for(var i=parents.Count-1;i>=0;i--)
+            for (var i = parents.Count - 1; i >= 0; i--)
             {
                 obj = _treeList.Where(x => x.Id == parents[i]).First();
                 tlwAlbums.Expand(obj);
@@ -1525,7 +1517,7 @@ namespace Mag6
                 {
                     genre = tSearch.Text;
                     isAdd = true;
-                } 
+                }
                 else
                     genre = GetNameWithoutCount((string)dwGenres.CurrentCell.Value);
                 if (!string.IsNullOrWhiteSpace(genre))
@@ -1713,12 +1705,17 @@ namespace Mag6
                             sameSongId = (int)row.Cells["SameSongId"].Value;
                         }
 
+                        var mnuPlayItem = new MenuItem("Play >>");
+                        mnuPlayItem.Tag = songId;
+                        mnuPlayItem.Click += onPlaySongMnuClick;
+                        m.MenuItems.Add(mnuPlayItem);
+
                         var mnuSsItem = new MenuItem("Mark");
                         mnuSsItem.Tag = songId;
                         mnuSsItem.Click += onMarkSongMnuClick;
                         m.MenuItems.Add(mnuSsItem);
 
-                        if (_markedSongId.HasValue && songId != _markedSongId) 
+                        if (_markedSongId.HasValue && songId != _markedSongId)
                         {
                             mnuSsItem = new MenuItem("Set same");
                             mnuSsItem.Tag = songId;
@@ -1744,17 +1741,10 @@ namespace Mag6
                                 join a in _ctx.Albums on s.AlbumId equals a.Id
                                 where s.SameSongId == sameSongId && s.Id != songId
                                 orderby a.Path, a.Name, s.FileName
-                                select new { a, s }).ToList();
+                                select new { a, s }).ToList()
+                                .Select(x => new AlbumSong(x.a, x.s)).ToList();
 
-                            foreach (var sng in sSongs)
-                            {
-                                var mnuItem = new MenuItem($"! {sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
-                                mnuItem.Tag = sng.a.Id;
-                                mnuItem.Click += onSongMnuClick;
-                                m.MenuItems.Add(mnuItem);
-
-                                usedSongs.Add(sng.s.Id);
-                            }
+                            AddSongsToMenu(m, sSongs, usedSongs, "! ");
                         }
 
                         var ss = ((string)row.Cells["SongName"].Value).ToLower();
@@ -1762,81 +1752,64 @@ namespace Mag6
                             var sngs = (
                                 from s in _ctx.Songs
                                 join a in _ctx.Albums on s.AlbumId equals a.Id
-                                where s.Name == ss && s.Id != songId
+                                where s.Name == ss && s.Id != songId && !s.SameSongId.HasValue
                                 orderby a.Path, a.Name, s.FileName
-                                select new { a, s }).ToList();
-                            var sngs2 = (
+                                select new { a, s }).ToList()
+                                .Select(x => new AlbumSong(x.a, x.s)).ToList();
+
+                            AddSongsToMenu(m, sngs, usedSongs, "");
+
+                            sngs = (
                                 from s in _ctx.Songs
                                 join a in _ctx.Albums on s.AlbumId equals a.Id
-                                where (s.Name.StartsWith(ss)) && s.Id != songId
+                                where s.Name.StartsWith(ss) && s.Id != songId && !s.SameSongId.HasValue
                                 orderby a.Path, a.Name, s.FileName
-                                select new { a, s }).ToList();
-                            var sngs3 = (
+                                select new { a, s }).ToList()
+                                .Select(x => new AlbumSong(x.a, x.s)).ToList();
+
+                            AddSongsToMenu(m, sngs, usedSongs, "> ");
+
+                            sngs = (
                                 from s in _ctx.Songs
                                 join a in _ctx.Albums on s.AlbumId equals a.Id
-                                where (s.Name.Length > 3 && ss.StartsWith(s.Name)) && s.Id != songId
+                                where (s.Name.Length > 2 && ss.StartsWith(s.Name)) && s.Id != songId && !s.SameSongId.HasValue
                                 orderby a.Path, a.Name, s.FileName
-                                select new { a, s }).ToList();
+                                select new { a, s }).ToList()
+                                .Select(x => new AlbumSong(x.a, x.s)).ToList();
 
-                            sngs = sngs.Where(x => usedSongs.All(y => y != x.s.Id)).ToList();
-                            sngs2 = sngs2.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id)).ToList();
-                            sngs3 = sngs3.Where(x => usedSongs.All(y => y != x.s.Id) && sngs.All(y => y.s.Id != x.s.Id) && sngs2.All(y => y.s.Id != x.s.Id)).ToList();
+                            AddSongsToMenu(m, sngs, usedSongs, "< ");
 
-                            if (usedSongs.Any() && (sngs.Any() || sngs2.Any() || sngs3.Any()))
-                            {
-                                m.MenuItems.Add(new MenuItem("-"));
-                            }
+                            sngs = (
+                                from s in _ctx.Songs
+                                join a in _ctx.Albums on s.AlbumId equals a.Id
+                                where s.Name == ss && s.Id != songId 
+                                orderby a.Path, a.Name, s.FileName
+                                select new { a, s }).ToList()
+                                .Select(x => new AlbumSong(x.a, x.s)).ToList();
 
-                            foreach (var sng in sngs)
-                            {
-                                var mnuItem = new MenuItem($"{sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
-                                mnuItem.Tag = sng.a.Id;
-                                mnuItem.Click += onSongMnuClick;
-                                m.MenuItems.Add(mnuItem);
-                            }
+                            AddSongsToMenu(m, sngs, usedSongs, "");
 
-                            if (sngs.Any() && (sngs2.Any() || sngs3.Any()))
-                            {
-                                m.MenuItems.Add(new MenuItem("-"));
-                            }
+                            sngs = (
+                                from s in _ctx.Songs
+                                join a in _ctx.Albums on s.AlbumId equals a.Id
+                                where s.Name.StartsWith(ss) && s.Id != songId
+                                orderby a.Path, a.Name, s.FileName
+                                select new { a, s }).ToList()
+                                .Select(x => new AlbumSong(x.a, x.s)).ToList();
 
-                            var cnt = 0;
-                            foreach (var sng in sngs2)
-                            {
-                                var mnuItem = new MenuItem($"> {sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
-                                mnuItem.Tag = sng.a.Id;
-                                mnuItem.Click += onSongMnuClick;
-                                m.MenuItems.Add(mnuItem);
+                            AddSongsToMenu(m, sngs, usedSongs, "> ");
 
-                                cnt++;
-                                if ((sngs2.Count + sngs3.Count) > 30 && cnt == 20)
-                                {
-                                    m.MenuItems.Add(new MenuItem($"... и еще {sngs2.Count + sngs3.Count - cnt}"));
-                                    break;
-                                }
-                            }
-                            if (sngs2.Any() && sngs3.Any())
-                            {
-                                m.MenuItems.Add(new MenuItem("-"));
-                            }
-                            if ((sngs2.Count + sngs3.Count) <= 30 || cnt == 20)
-                            {
-                                foreach (var sng in sngs3)
-                                {
-                                    var mnuItem = new MenuItem($"< {sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
-                                    mnuItem.Tag = sng.a.Id;
-                                    mnuItem.Click += onSongMnuClick;
-                                    m.MenuItems.Add(mnuItem);
+                            sngs = (
+                                from s in _ctx.Songs
+                                join a in _ctx.Albums on s.AlbumId equals a.Id
+                                where (s.Name.Length > 2 && ss.StartsWith(s.Name)) && s.Id != songId
+                                orderby a.Path, a.Name, s.FileName
+                                select new { a, s }).ToList()
+                                .Select(x => new AlbumSong(x.a, x.s)).ToList();
 
-                                    cnt++;
-                                    if ((sngs2.Count + sngs3.Count) > 30 && cnt == 20)
-                                    {
-                                        m.MenuItems.Add(new MenuItem($"... и еще {sngs2.Count + sngs3.Count - cnt}"));
-                                        break;
-                                    }
-                                }
-                            }
-                            if (usedSongs.Any() || sngs.Any() || sngs2.Any() || sngs3.Any())
+                            AddSongsToMenu(m, sngs, usedSongs, "< ");
+
+                            if (usedSongs.Any())
                             {
                                 m.Show(dwSongs, new Point(e.X, e.Y));
                             } else
@@ -1850,7 +1823,28 @@ namespace Mag6
             }
         }
 
-        private void onSongMnuClick(object sender, EventArgs e) 
+
+        private void AddSongsToMenu(ContextMenu m, List<AlbumSong> sngs, List<int> usedSongs, string prefix)
+        {
+            sngs = sngs.Where(x => usedSongs.All(y => y != x.s.Id)).ToList();
+
+            if (usedSongs.Any() && sngs.Any())
+            {
+                m.MenuItems.Add(new MenuItem("-"));
+            }
+
+            foreach (var sng in sngs)
+            {
+                var mnuItem = new MenuItem($"{prefix}{sng.a.Path.Substring(6)}\\{sng.a.Name} | {sng.s.Name}");
+                mnuItem.Tag = sng.a.Id;
+                mnuItem.Click += onSongMnuClick;
+                m.MenuItems.Add(mnuItem);
+
+                usedSongs.Add(sng.s.Id);
+            }
+        }
+
+        private void onSongMnuClick(object sender, EventArgs e)
         {
             var mnu = (MenuItem)sender;
             var alb = _ctx.Albums.FirstOrDefault(x => x.Id == (int)mnu.Tag);
@@ -1871,6 +1865,23 @@ namespace Mag6
                 {
                     _markedSongId = sng.Id;
                     lMarkedSong.Text = $"{alb.Path.Substring(6)}\\{alb.Name} | {sng.Name}";
+                }
+            }
+        }
+
+        private void onPlaySongMnuClick(object sender, EventArgs e)
+        {
+            var mnu = (MenuItem)sender;
+            var sng = _ctx.Songs.FirstOrDefault(x => x.Id == (int)mnu.Tag);
+            if (sng != null)
+            {
+                var alb = _ctx.Albums.FirstOrDefault(x => x.Id == sng.AlbumId);
+                if (alb != null)
+                {
+                    var path = GetDirName(txtMusicPath.Text);
+                    path = path.Substring(0, path.Length - 6) + alb.Path + "\\" + alb.Name + "\\" + sng.FileName;
+
+                    System.Diagnostics.Process.Start(path);
                 }
             }
         }
@@ -1914,5 +1925,17 @@ namespace Mag6
                 tlwAlbums_SelectionChanged(null, null);
             }
         }
+        private class AlbumSong
+        {
+            public Album a;
+            public Song s;
+            public AlbumSong(Album a, Song s)
+            {
+                this.a = a;
+                this.s = s;
+            }
+        }
+
     }
+
 }
